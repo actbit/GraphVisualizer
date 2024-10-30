@@ -11,9 +11,13 @@ namespace GraphLibrary
     public class Node
     {
         public static Action<Node>? ColorChange = null;
+        public static Action<Node>? TitleChange = null;
+
         public static Action<Node>? CreateNode = null;
         public static Action<Node>? DeleteNode = null;
-        
+        public static Action<Edge>? CreateEdge =null;
+
+
         internal static List<Edge> edges = new List<Edge>();
         public static IReadOnlyList<Edge> Edges
         {
@@ -26,7 +30,8 @@ namespace GraphLibrary
             return node != null;
         }
         public string id {  get; private set; }
-        public string title { get; private set; }
+        public string _title;
+        public string title { get { return _title; } set { _title =value;TitleChange?.Invoke(this); } }
         string _color = "#666";
         public string color { 
             get
@@ -97,16 +102,20 @@ namespace GraphLibrary
 
         public void NewToEdge(Node node,int weight)
         {
-            edges.Add(new Edge(this, node, weight));
+            var edge = new Edge(this, node, weight);
+            edges.Add(edge);
+            CreateEdge?.Invoke(edge);
+
         }
 
         public void Delete()
         {
-            var deleteEdges = edges.Where(x => x.Source == this).Concat(edges.Where(x => x.Target == this));
+            var deleteEdges = edges.Where(x => x.Source == this).Concat(edges.Where(x => x.Target == this)).ToList();
             foreach(var edge in deleteEdges)
             {
                 edges.Remove(edge);
             }
+            DeleteNode?.Invoke(this);
         }
         public InternalNode ToInternalNode()
         {
@@ -131,7 +140,6 @@ namespace GraphLibrary
         public static Action<Edge>? ColorChange;
         public static Action<Edge>? WeightChange;
         public static Action<Edge>? ToNodeChange;
-
         public static Action<Edge>? DeleteChange;
 
         bool IsTarget = false;
@@ -143,8 +151,16 @@ namespace GraphLibrary
         internal Edge Edge;
         public void Delete()
         {
-            Node.edges.Remove(Edge);
             DeleteChange?.Invoke(Edge);
+
+            Node.edges.Remove(Edge);
+        }
+        public string? ID
+        {
+            get
+            {
+                return Edge.ID;
+            }
         }
         public string? Color
         {
@@ -198,5 +214,6 @@ namespace GraphLibrary
             return Edge.ToInternalEdge();
 
         }
+        
     }
 }

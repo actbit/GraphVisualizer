@@ -6,7 +6,8 @@
 
         
         <button @onclick="click"></button>
-        <div >
+        <div class="border-radius5">
+            <p>node</p>
             <div class="nodes list-group">
                 @foreach (var node in Nodes)
                 {
@@ -23,30 +24,167 @@
                 }
 
             </div>
-        </div>
+            @if(SelectedNode != null)
+            {
 
+                <div class="remove">
+                    <span>nodeの削除</span>
+                    <button class="button-right btn btn-danger" @onclick="clickNodeDelete">edgeを削除</button>
 
-        <button>nodeの追加</button>
-
-        <div class="edges list-group">
-
-            @if(SelectedNode != null){
-                foreach (var edge in SelectedNode.ToEdges)
-                {
-                    if(SelectedToEdge == edge)
-                    {
-                        <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
-
-                    }
-                    else
-                    {
-                        <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
-
-                    }
-                }
+                </div>
+                <div class="edit">
+                    <p>選択中nodeの編集</p>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">nodeのタイトル</span>
+                        <input type="text" class="form-control" @bind = "editNodeTitle">
+                    </div>
+                    <button class="button-right btn btn-primary" @onclick="clickNodeEdit">nodeの編集</button>
+                </div>
             }
+
+
+            <div class="create">
+                <p>nodeの追加</p>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">ID</span>
+                    <input type="text" class="form-control" @bind="createNodeId">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">nodeのタイトル</span>
+                    <input type="text" class="form-control" @bind="createNodeTitle">
+                </div>
+                <button class="button-right btn btn-primary" @onclick="clickNodeCreate">nodeの追加</button>
+                <p style="color:red">@warningCreateNode</p>
+
+            </div>
         </div>
-        <button>edgeを追加</button>
+        @if (SelectedNode != null)
+        {
+            <div class="border-radius5">
+                <p>edge</p>
+                <div class="edges list-group">
+
+                        @foreach (var edge in SelectedNode.ToEdges)
+                        {
+                            if (SelectedToEdge != null&&SelectedToEdge.ID == edge.ID)
+                            {
+                                <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+
+                            }
+                            else
+                            {
+                                <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+
+                            }
+                        }
+                
+                </div>
+                @if (SelectedToEdge != null)
+                {
+                    <div class="remove">
+                        <span>edgeの削除</span>
+                        <button class="button-right btn btn-danger" @onclick="clickEdgeDelete">edgeを削除</button>
+
+                    </div>
+                
+                <div class="edit">
+
+                    <p>edgeの編集</p>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">edgeの重み</span>
+                        <input class="form-control" type="number" @bind="editEdgeWeighInput">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">接続先のnode</span>
+                        <select @bind="EditToEdgeNodeSelected" class="form-select" aria-label="Default select example">
+                            @if (EditToEdgeNodeSelected == null)
+                            {
+                                <option value="@("")" selected>nodeの選択</option>
+
+                            }
+                            else
+                            {
+                                <option value="@("")">nodeの選択</option>
+
+                            }
+                            @foreach (var nodeSelect in Nodes)
+                            {
+                                @if (EditToEdgeNodeSelected == nodeSelect.id)
+                                {
+                                    <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+                                }
+                                else
+                                {
+
+                                    <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+
+                    <button class="button-right btn btn-primary" @onclick="clickEdgeEdit">edgeを編集</button>
+                        <p style="color:red">@editEdgeWarning</p>
+
+
+                </div>
+
+                }
+                <div class="create">
+                    <p>edgeを追加</p>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">edgeの重み</span>
+                        <input type="number" class="form-control" @bind="createEdgeWeighInput">
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">接続先のnode</span>
+                        <select @bind="CreateToEdgeNodeSelected" class="form-select" aria-label="Default select example">
+                            @if (CreateToEdgeNodeSelected == null || CreateToEdgeNodeSelected == "")
+                            {
+                                <option value="@("")" selected>nodeの選択</option>
+
+                            }
+                            else
+                            {
+                                <option value="@("")">nodeの選択</option>
+
+                            }
+                            @foreach (var nodeSelect in Nodes)
+                            {
+                                @if (CreateToEdgeNodeSelected == nodeSelect.id)
+                                {
+                                    <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+                                }
+                                else
+                                {
+
+                                    <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+
+                                }
+
+
+                            }
+
+                        </select>
+                    </div>
+
+                    <button class="button-right btn btn-primary" @onclick = "clickEdgeCreate">edgeを追加</button>
+                    <p style="color:red">@createEdgeWarning</p>
+
+
+                </div>
+            </div>
+
+        }
 
     </div>
     <div id="cy" class="center-item"></div>
@@ -64,8 +202,11 @@
     }
 
     .controller{
-        background-color:red;
+        background-color:lightgray;
         padding:10px;
+        overflow: auto;
+        overflow-y: scroll;
+        width: 400px;
     }
 
     .center-item {
@@ -73,26 +214,160 @@
     }
 
     .lritem {
-        width: 150px;
     }
 
     .edge{
         height:400px;
     }
     .nodes{
-        height:200px;
         max-height:200px;
         overflow: auto;
         overflow-y: scroll;
     }
+
+    .edges {
+        max-height: 200px;
+        overflow: auto;
+        overflow-y: scroll;
+    }
+
+    .remove {
+        background-color: #f3f3f3;
+        margin: 5px;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    .edit {
+        background-color: #f3f3f3;
+        margin:5px;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    .border-radius5{
+        border-radius: 5px;
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 30px;
+    }
+    .create{
+        background-color: #f3f3f3;
+        padding:10px;
+        margin: 5px;
+        border-radius: 5px;
+    }
+
+    .button-right{
+        display: block;
+        margin-left: auto;
+        margin-right:0;
+    }
 </style>
 @code {
+    string createEdgeWarning = "";
+    string createEdgeWeighInput ="-1";
+    string CreateToEdgeNodeSelected;
+    string EditToEdgeNodeSelected;
+    string editEdgeWeighInput = "-1";
     List<Node> Nodes = new List<Node>();
     ToEdge SelectedToEdge;
     Node SelectedNode;
+    string editEdgeWarning = "";
+    bool IsInitialized = false;
+    string createNodeTitle = "";
+    string createNodeId = "";
+    string editNodeTitle = "";
+    string warningCreateNode = "";
+    void clickNodeDelete()
+    {
+        SelectedNode.Delete();
+    }
+    void clickNodeCreate()
+    {
+        if(Nodes.Where(x=>x.id == createNodeId).Count() > 0)
+        {
+            warningCreateNode = "存在するIDです。";
+
+            return;
+        }
+        Node.Create(createNodeId, createNodeTitle);
+        createNodeId = "";
+        createNodeTitle = "";
+    }
+    void clickNodeEdit()
+    {
+        SelectedNode.title = editNodeTitle;
+    }
     void SelectToEdge(ToEdge toEdge)
     {
+        
         SelectedToEdge = toEdge;
+        editEdgeWeighInput = toEdge.Weight.ToString();
+        EditToEdgeNodeSelected = toEdge.ToNode.id;
+        StateHasChanged();
+    }
+
+    void clickEdgeCreate()
+    {
+        int weight = 0;
+        if (!int.TryParse(createEdgeWeighInput,out weight))
+        {
+            createEdgeWarning = "edgeの重みは数値にしてください";
+            StateHasChanged();
+
+            return;
+        }
+        var targetNode = Nodes.Where(x => x.id == CreateToEdgeNodeSelected).FirstOrDefault();
+        if(targetNode == default(Node))
+        {
+            if (CreateToEdgeNodeSelected == null || CreateToEdgeNodeSelected == "")
+            {
+                createEdgeWarning = "nodeを選択してください";
+
+            }
+            else
+            {
+                createEdgeWarning = "削除されたnodeです";
+
+            }
+
+            return;
+        }
+        SelectedNode.NewToEdge(targetNode, weight);
+        StateHasChanged();
+    }
+    void clickEdgeDelete()
+    {
+        if(SelectedToEdge != null)
+        {
+            SelectedToEdge.Delete();
+        }
+    }
+    void clickEdgeEdit()
+    {
+        int weight = 0;
+        if (!int.TryParse(editEdgeWeighInput, out weight))
+        {
+            editEdgeWarning = "edgeの重みは数値にしてください";
+            return;
+        }
+        var targetNode = Nodes.Where(x => x.id == EditToEdgeNodeSelected).FirstOrDefault();
+        if (targetNode == default(Node))
+        {
+            if(EditToEdgeNodeSelected == null||EditToEdgeNodeSelected == "")
+            {
+                editEdgeWarning = "nodeを選択してください";
+
+            }
+            else
+            {
+                editEdgeWarning = "削除されたnodeです";
+
+            }
+            return;
+        }
+        SelectedToEdge.ToNode = targetNode;
+        SelectedToEdge.Weight = weight;
+        StateHasChanged();
     }
     void SelectNode(Node node)
     {
@@ -102,19 +377,17 @@
         }
         SelectedNode = node;
         SelectedToEdge = null;
+        createEdgeWeighInput = "-1";
+        CreateToEdgeNodeSelected = "";
+        editNodeTitle = node.title;
 
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            Node.ColorChange = NodeColorChange;
-            Node.CreateNode = CreateNode;
-            Node.DeleteNode = DeleteNode;
-            ToEdge.ColorChange = EdgeColorChange;
-            ToEdge.DeleteChange = EdgeDelete;
-            ToEdge.WeightChange = WeightChange;
-            ToEdge.ToNodeChange = ToNodeChange;
+            IsInitialized = false;
+
 
 
             var node0 =  Node.Create("0", "gray", "0");
@@ -133,16 +406,30 @@
             node4.NewToEdge(node5, -1);
             node3.NewToEdge(node6, -1);
             node6.NewToEdge(node1, -1);
+            node2.NewToEdge(node7, -1);
+
             EdgeAndNode en = new EdgeAndNode();
-            en.Nodes = Node.Nodes.Select(x => new InNodeObject { data = x.ToInternalNode() }).ToList();
+            Nodes = Node.Nodes.ToList();
+
+            en.Nodes = Nodes.Select(x => new InNodeObject { data = x.ToInternalNode() }).ToList();
             en.Edges = Node.Edges.Select(x => new InEdgeObject { data = x.ToInternalEdge() }).ToList();
             await JSRuntime.InvokeVoidAsync("drawGraph", "cy",en);
-
+            Node.ColorChange = NodeColorChange;
+            Node.CreateNode = CreateNode;
+            Node.DeleteNode = DeleteNode;
+            ToEdge.ColorChange = EdgeColorChange;
+            ToEdge.DeleteChange = EdgeDelete;
+            ToEdge.WeightChange = WeightChange;
+            ToEdge.ToNodeChange = ToNodeChange;
+            Node.CreateEdge= CreateEdge;
+            Node.TitleChange = NodeTitleChange;
             StateHasChanged();
         }
 
     }
     bool tmp = false;
+
+
     async Task click()
     {
         // await JSRuntime.InvokeVoidAsync("changeNodeColor", "a", "black");
@@ -162,49 +449,73 @@
         await JSRuntime.InvokeVoidAsync("updateNode", d);
         tmp = !tmp;
     }
-
-    void EdgeColorChange(Edge toEdge)
+    async void NodeTitleChange(Node node)
     {
-        
-    }
-    void WeightChange(Edge edge)
-    {
+        await JSRuntime.InvokeVoidAsync("updateNode", node.ToInternalNode());
 
     }
-    void EdgeDelete(Edge edge)
+    async void EdgeColorChange(Edge edge)
     {
+        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
+    }
+    async void WeightChange(Edge edge)
+    {
+        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
 
     }
-    void EdgeWeightChange(Edge edge)
+    async void EdgeDelete(Edge edge)
     {
+        if(SelectedNode.ToEdges.Where(x=>x.ID == edge.ID).Count() > 0)
+        {
+            if(SelectedToEdge.ID == edge.ID)
+            {
+                SelectedToEdge = null;
+            } 
+            StateHasChanged();
+        }
+        await JSRuntime.InvokeVoidAsync("removeAtId", edge.ID);
+    }
+    async void EdgeWeightChange(Edge edge)
+    {
+        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
 
     }
-    void ToNodeChange(Edge edge)
+    async void ToNodeChange(Edge edge)
     {
+        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
 
     }
 
-    void NodeColorChange(Node node)
+    async void NodeColorChange(Node node)
     {
+        await JSRuntime.InvokeVoidAsync("updateNode", node.ToInternalNode());
 
     }
 
-    void CreateNode(Node node)
+    async void CreateNode(Node node)
     {
         Nodes = Node.Nodes.ToList();
-        if (!Nodes.Contains(SelectedNode))
-        {
-            SelectedNode = null;
-        }
+        await JSRuntime.InvokeVoidAsync("nodeAdd", node.ToInternalNode());
+
         StateHasChanged();
     }
-    void DeleteNode(Node node)
+
+    async void CreateEdge(Edge edge)
     {
+        Nodes = Node.Nodes.ToList();
+        await JSRuntime.InvokeVoidAsync("edgeAdd", edge.ToInternalEdge());
+        StateHasChanged();
+    }
+    async void DeleteNode(Node node)
+    {
+
         Nodes = Node.Nodes.ToList();
         if (!Nodes.Contains(SelectedNode))
         {
             SelectedNode = null;
         }
+        await JSRuntime.InvokeVoidAsync("removeAtId", node.id);
+
         StateHasChanged();
     }
 }

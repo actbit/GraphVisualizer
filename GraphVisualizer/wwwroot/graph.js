@@ -25,7 +25,8 @@ function drawGraph(divId, edgeAndNode) {
                     'line-color': 'data(color)',
                     'target-arrow-color': 'data(color)',
                     'target-arrow-shape': "none",
-                    'curve-style': 'bezier'
+                    'curve-style': 'bezier',
+                    'label':'data(weight)'
                 }
             }
         ],
@@ -47,20 +48,33 @@ function drawGraph(divId, edgeAndNode) {
     graphData.edges = edges;
     return graphData;
 }
-function getRandomPosition(maxX, maxY) {
+function getRandomPosition() {
+    var pan = CY.pan();
+    var zoom = CY.zoom();
+    var width = CY.width();
+    var height = CY.height();
     return {
-        x: maxX - Math.random() * maxX,
-        y: maxY - Math.random() * maxY
+
+        x: pan.x + Math.random() * width / zoom,
+        y: pan.y + Math.random() * height / zoom
     };
 }
 function removeAtId(id) {
     CY.getElementById(id).remove();
 }
 
-function add(dataArray) {
-    CY.add(data);
+function nodeAdd(nodedata) {
+    CY.add(
+        {
+            data: nodedata,
+            position: getRandomPosition()
+        });
 }
-
+function edgeAdd(edgedata) {
+    CY.add({
+        data:edgedata
+    });
+}
 function changeNodeColor(id, color) {
     CY.getElementById(id).style("background-color", color);
 }
