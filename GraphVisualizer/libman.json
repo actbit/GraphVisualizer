@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "cytoscape@3.30.3",
+      "destination": "wwwroot/cytoscape/"
+    }
+  ]
+}

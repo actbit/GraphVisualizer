@@ -1,0 +1,98 @@
+﻿@page "/graph"
+@using GraphLibrary
+@inject IJSRuntime JSRuntime
+<div class="base">
+    <div class="controller lritem">
+
+        <p>aaaa</p>
+        <button @onclick="click"></button>
+
+    </div>
+    <div id="cy" class="center-item"></div>
+    <div class="lritem">
+    </div>
+</div>
+
+
+<style>
+    .base{
+        display:flex;
+        justify-items:stretch;
+        justify-content: space-between;
+        height:100vh;
+    }
+
+    .controller{
+        background-color:red;
+        padding:10px;
+    }
+
+    .center-item {
+        flex-grow: 1;
+    }
+
+    .lritem {
+        width: 150px;
+    }
+</style>
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("drawGraph", "cy");
+            Node.ColorChangeEvent = NodeColorChange;
+            Node.CreateNode = CreateNode;
+            Node.DeleteNode = DeleteNode;
+            ToEdge.ColorChange = EdgeColorChange;
+            ToEdge.DeleteChange = EdgeDelete;
+            ToEdge.WeightChange = WeightChange;
+            ToEdge.ToNodeChange = ToNodeChange;
+        }
+
+    }
+    async Task click()
+    {
+        await JSRuntime.InvokeVoidAsync("changeNodeColor", "a", "black");
+        await JSRuntime.InvokeVoidAsync("changeEdgeColor", "ab", "orange");
+        await JSRuntime.InvokeVoidAsync("changeEdgeSource", "ab", "t12");
+        await JSRuntime.InvokeVoidAsync("drawGraph", "cy");
+
+
+    }
+
+    void EdgeColorChange(Edge toEdge)
+    {
+
+    }
+    void WeightChange(Edge edge)
+    {
+
+    }
+    void EdgeDelete(Edge edge)
+    {
+
+    }
+    void EdgeWeightChange(Edge edge)
+    {
+
+    }
+    void ToNodeChange(Edge edge)
+    {
+        
+    }
+
+    void NodeColorChange(Node node)
+    {
+
+    }
+    void CreateNode(Node node)
+    {
+
+    }
+    void DeleteNode(Node node)
+    {
+        
+    }
+}
