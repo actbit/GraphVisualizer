@@ -4,8 +4,42 @@
 <div class="base">
     <div class="controller lritem">
 
-        <p>aaaa</p>
+        
         <button @onclick="click"></button>
+        <div class="list-group">
+            @foreach (var node in Nodes)
+            {
+                if (SelectedNode == node)
+                {
+                    <button type="button" class="list-group-item list-group-item-action active">@(node.id+":"+node.title)</button>
+
+                }
+                else
+                {
+                    <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+
+                }
+            }
+           
+        </div>
+        <div class="edges list-group">
+
+            @if(SelectedNode != null){
+                foreach (var edge in SelectedNode.ToEdges)
+                {
+                    if(SelectedToEdge == edge)
+                    {
+                        <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+
+                    }
+                    else
+                    {
+                        <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+
+                    }
+                }
+            }
+        </div>
 
     </div>
     <div id="cy" class="center-item"></div>
@@ -34,37 +68,69 @@
     .lritem {
         width: 150px;
     }
+
+    .edge{
+        height:400px;
+    }
 </style>
 @code {
+    List<Node> Nodes = new List<Node>();
+    ToEdge SelectedToEdge;
+    Node SelectedNode;
+    void SelectToEdge(ToEdge toEdge)
+    {
+        
+    }
+    void SelectNode(Node node)
+    {
+        if (node == SelectedNode)
+        {
+            return;
+        }
+        SelectedNode = node;
+        SelectedToEdge = null;
 
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await JSRuntime.InvokeVoidAsync("drawGraph", "cy");
-            Node.ColorChangeEvent = NodeColorChange;
+            Node.ColorChange = NodeColorChange;
             Node.CreateNode = CreateNode;
             Node.DeleteNode = DeleteNode;
             ToEdge.ColorChange = EdgeColorChange;
             ToEdge.DeleteChange = EdgeDelete;
             ToEdge.WeightChange = WeightChange;
             ToEdge.ToNodeChange = ToNodeChange;
+            StateHasChanged();
         }
 
     }
+    bool tmp = false;
     async Task click()
     {
-        await JSRuntime.InvokeVoidAsync("changeNodeColor", "a", "black");
-        await JSRuntime.InvokeVoidAsync("changeEdgeColor", "ab", "orange");
-        await JSRuntime.InvokeVoidAsync("changeEdgeSource", "ab", "t12");
-        await JSRuntime.InvokeVoidAsync("drawGraph", "cy");
+        // await JSRuntime.InvokeVoidAsync("changeNodeColor", "a", "black");
+        // await JSRuntime.InvokeVoidAsync("changeEdgeColor", "ab", "orange");
+        // await JSRuntime.InvokeVoidAsync("changeEdgeSource", "ab", "t12");
+        // await JSRuntime.InvokeVoidAsync("drawGraph", "cy");
 
+        //await JSRuntime.InvokeVoidAsync("isDirected", tmp);
+        var node =  Node.Create("a", "blue", "abc");
+        node.NewTo(node,10);
+        var edges = node.ToEdges;
+        var d = edges.First().ToInternalEdge();
 
+        d.source = "t12";
+        d.color = "blue";
+        d.id = "ab";
+        await JSRuntime.InvokeVoidAsync("updateNode", d);
+        tmp = !tmp;
     }
 
     void EdgeColorChange(Edge toEdge)
     {
-
+        
     }
     void WeightChange(Edge edge)
     {
@@ -80,19 +146,30 @@
     }
     void ToNodeChange(Edge edge)
     {
-        
+
     }
 
     void NodeColorChange(Node node)
     {
 
     }
+
     void CreateNode(Node node)
     {
-
+        Nodes = Node.Nodes.ToList();
+        if (!Nodes.Contains(SelectedNode))
+        {
+            SelectedNode = null;
+        }
+        StateHasChanged();
     }
     void DeleteNode(Node node)
     {
-        
+        Nodes = Node.Nodes.ToList();
+        if (!Nodes.Contains(SelectedNode))
+        {
+            SelectedNode = null;
+        }
+        StateHasChanged();
     }
 }
