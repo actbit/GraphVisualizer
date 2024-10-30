@@ -6,22 +6,28 @@
 
         
         <button @onclick="click"></button>
-        <div class="list-group">
-            @foreach (var node in Nodes)
-            {
-                if (SelectedNode == node)
+        <div >
+            <div class="nodes list-group">
+                @foreach (var node in Nodes)
                 {
-                    <button type="button" class="list-group-item list-group-item-action active">@(node.id+":"+node.title)</button>
+                    if (SelectedNode == node)
+                    {
+                        <button type="button" class="list-group-item list-group-item-action active">@(node.id + ":" + node.title)</button>
 
-                }
-                else
-                {
-                    <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+                    }
+                    else
+                    {
+                        <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
 
+                    }
                 }
-            }
-           
+
+            </div>
         </div>
+
+
+        <button>nodeの追加</button>
+
         <div class="edges list-group">
 
             @if(SelectedNode != null){
@@ -40,6 +46,7 @@
                 }
             }
         </div>
+        <button>edgeを追加</button>
 
     </div>
     <div id="cy" class="center-item"></div>
@@ -72,6 +79,12 @@
     .edge{
         height:400px;
     }
+    .nodes{
+        height:200px;
+        max-height:200px;
+        overflow: auto;
+        overflow-y: scroll;
+    }
 </style>
 @code {
     List<Node> Nodes = new List<Node>();
@@ -79,7 +92,7 @@
     Node SelectedNode;
     void SelectToEdge(ToEdge toEdge)
     {
-        
+        SelectedToEdge = toEdge;
     }
     void SelectNode(Node node)
     {
@@ -95,7 +108,6 @@
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("drawGraph", "cy");
             Node.ColorChange = NodeColorChange;
             Node.CreateNode = CreateNode;
             Node.DeleteNode = DeleteNode;
@@ -103,6 +115,29 @@
             ToEdge.DeleteChange = EdgeDelete;
             ToEdge.WeightChange = WeightChange;
             ToEdge.ToNodeChange = ToNodeChange;
+
+
+            var node0 =  Node.Create("0", "gray", "0");
+            var node1 = Node.Create("1", "gray", "1");
+            var node2 = Node.Create("2", "gray", "2");
+            var node3 = Node.Create("3", "gray", "3");
+            var node4 = Node.Create("4", "gray", "4");
+            var node5 = Node.Create("5", "gray", "5");
+            var node6 = Node.Create("6", "gray", "6");
+            var node7 = Node.Create("7", "gray", "7");
+            node0.NewTo(node1,-1);
+            node0.NewTo(node2,-1);
+            node2.NewTo(node3,-1);
+            node3.NewTo(node0, -1);
+            node3.NewTo(node4, -1);
+            node4.NewTo(node5, -1);
+            node3.NewTo(node6, -1);
+            node6.NewTo(node1, -1);
+            EdgeAndNode en = new EdgeAndNode();
+            en.Nodes = Node.Nodes.Select(x => new InNodeObject { data = x.ToInternalNode() }).ToList();
+            en.Edges = Node.Edges.Select(x => new InEdgeObject { data = x.ToInternalEdge() }).ToList();
+            await JSRuntime.InvokeVoidAsync("drawGraph", "cy",en);
+
             StateHasChanged();
         }
 

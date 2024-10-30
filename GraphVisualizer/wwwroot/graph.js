@@ -1,40 +1,13 @@
 ﻿
 var CY
 
-function drawGraph(divId, graphType) {
+function drawGraph(divId, edgeAndNode) {
+    elementsData = edgeAndNode.nodes.concat(edgeAndNode.edges);
     CY = cytoscape({
 
         container: document.getElementById(divId), // container to render in
 
-        elements: [ // list of graph elements to start with
-            { // node a
-                data: { id: 'a' }
-            },
-            { // node b
-                data: { id: 'b' }
-            },
-            { // edge ab
-                data: { id: 'ab', source: 'a', target: 'b' }
-            },
-            { // edge ab
-                data: { id: 'ab2', source: 'a', target: 'b' }
-            },
-            { // edge ab
-                data: { id: 'ab3', source: 'a', target: 'b' }
-            },
-
-            { // edge ab
-                data: { id: 'aaa', source: 'a', target: 'a' }
-            },
-
-            { // edge ab
-                data: { id: 'aaa1', source: 'a', target: 'a' }
-            },
-            { // edge ab
-                data: { id: 'aa', source: 'b', target: 'a' }
-            }
-
-        ],
+        elements: elementsData,
 
         style: [ // the stylesheet for the graph
             {
@@ -51,7 +24,7 @@ function drawGraph(divId, graphType) {
                     'width': 3,
                     'line-color': 'data(color)',
                     'target-arrow-color': 'data(color)',
-                    'target-arrow-shape': graphType,
+                    'target-arrow-shape': "none",
                     'curve-style': 'bezier'
                 }
             }
@@ -61,54 +34,14 @@ function drawGraph(divId, graphType) {
         }
 
     });
-    var randomPosition = getRandomPosition(CY.width(), CY.height());
-    CY.add(
-        {
-            data: { id: "t1" },
-            position: randomPosition
-        },
-
-    )
-    CY.add(
-        {
-            data: { id: "t2", source: "t1", target: 'a' },
-            position: randomPosition
-
-        }
-    );
-    var randomPosition = getRandomPosition(CY.width(), CY.height());
-
-    CY.add(
-        {
-            data: { id: "t12", title: "test" },
-            position: randomPosition
-
-        },
-
-    )
-    CY.add(
-        {
-            data: { id: "t22", source: "t12", target: 'a' },
-            position: randomPosition
-
-        }
-    );
     // 全てのノードのデータを取得
     var nodes = CY.nodes().map(node => node.data());
-    CY.getElementById("t12").style("background-color", "blue")
     // 全てのエッジのデータを取得
     var edges = CY.edges().map(edge => edge.data());
 
     console.log(nodes);
     console.log(edges);
-    CY.fit();
-    //console.log(CY.elements());
-    //var nodes = CY.nodes();
-    //var txt1 = JSON.stringify(nodes);
-    //console.log(txt1);
-
-    //var txt =JSON.stringify(nodes);
-    //console.log(txt);
+    //CY.fit();
     var graphData = {};
     graphData.nodes = nodes;
     graphData.edges = edges;
@@ -131,11 +64,7 @@ function add(dataArray) {
 function changeNodeColor(id, color) {
     CY.getElementById(id).style("background-color", color);
 }
-function changeEdgeColor(id, color) {
-    var line = CY.getElementById(id);
-    line.style("line-color", color);
-    line.style("target-arrow-color", color);
-}
+
 
 function changeEdgeSource(id, sourceId) {
     var edge = CY.getElementById(id);

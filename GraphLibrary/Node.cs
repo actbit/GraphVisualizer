@@ -13,14 +13,21 @@ namespace GraphLibrary
         public static Action<Node>? ColorChange = null;
         public static Action<Node>? CreateNode = null;
         public static Action<Node>? DeleteNode = null;
+        
         internal static List<Edge> edges = new List<Edge>();
         public static IReadOnlyList<Edge> Edges
         {
             get { return edges; }
         }
+
+        public static bool ContainsID(string id)
+        {
+            var node = nodes.Where(x => x.id == id).FirstOrDefault();
+            return node != null;
+        }
         public string id {  get; private set; }
         public string title { get; private set; }
-        string _color;
+        string _color = "#666";
         public string color { 
             get
             { 
@@ -188,19 +195,7 @@ namespace GraphLibrary
 
         public InternalEdge ToInternalEdge()
         {
-            string wstr = "";
-            if (!(Weight == null || Weight < 0))
-            {
-                wstr = Weight.Value.ToString();
-            }
-            return new InternalEdge
-            {
-                id = Edge.ID,
-                source = Edge.Source.id,
-                target = Edge.Target.id,
-                weight = wstr,
-                color = this.Color
-            };
+            return Edge.ToInternalEdge();
 
         }
     }
