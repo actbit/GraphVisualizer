@@ -27,22 +27,7 @@ namespace GraphLibrary
             Color = color;
         }
 
-        public InternalEdge ToInternalEdge()
-        {
-            string wstr = "";
-            if (!(Weight == null || Weight < 0))
-            {
-                wstr = Weight.Value.ToString();
-            }
-            return new InternalEdge
-            {
-                id = ID,
-                source = Source.id,
-                target = Target.id,
-                weight = wstr
-            };
 
-        }
     }
 
     public class InternalEdge
@@ -51,6 +36,7 @@ namespace GraphLibrary
         public string source { get; set; }
         public string target { get; set; }
         public string weight { get; set; }
+        public string color { get;set; }
 
     }
 }

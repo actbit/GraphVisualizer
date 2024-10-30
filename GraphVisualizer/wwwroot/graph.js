@@ -40,7 +40,7 @@ function drawGraph(divId, graphType) {
             {
                 selector: 'node',
                 style: {
-                    'background-color': '#666',
+                    'background-color': 'data(color)',
                     'label': 'data(title)'
                 }
             },
@@ -49,8 +49,8 @@ function drawGraph(divId, graphType) {
                 selector: 'edge',
                 style: {
                     'width': 3,
-                    'line-color': '#ccc',
-                    'target-arrow-color': 'red',
+                    'line-color': 'data(color)',
+                    'target-arrow-color': 'data(color)',
                     'target-arrow-shape': graphType,
                     'curve-style': 'bezier'
                 }
@@ -141,10 +141,38 @@ function changeEdgeSource(id, sourceId) {
     var edge = CY.getElementById(id);
     edge.move({ source: sourceId });
 }
+function moveEdge(data) {
+    var edge = CY.getElementById(data.id);
+    edge.move({ source: data.source,target:data.target });
+
+}
+function updateNode(data) {
+    var node = CY.getElementById(data.id);
+    node.data(data);
+}
+
+function updateEdge(data) {
+    var edge = CY.getElementById(data.id);
+    edge.data(data);
+    edge.move({ source: data.source, target: data.target });
+}
 function changeEdgeTarget(id, target) {
     var edge = CY.getElementById(id);
     edge.move({ target: targetId });
 }
 function getSize() {
     return { width: CY.width(), height: CY.height() }
+}
+
+function isDirected(directed) {
+    type = "none";
+    if (directed) {
+        type = "triangle"
+    }
+    CY.style()
+        .selector("edge")
+        .style({
+            'target-arrow-shape': type
+        })
+        .update();
 }

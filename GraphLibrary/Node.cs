@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -9,17 +10,37 @@ namespace GraphLibrary
 {
     public class Node
     {
-        public static Action<Node>? ColorChangeEvent = null;
+        public static Action<Node>? ColorChange = null;
         public static Action<Node>? CreateNode = null;
         public static Action<Node>? DeleteNode = null;
-        internal static List<Edge> edges = new List<Edge>();  
+        internal static List<Edge> edges = new List<Edge>();
+        public static IReadOnlyList<Edge> Edges
+        {
+            get { return edges; }
+        }
         public string id {  get; private set; }
         public string title { get; private set; }
-        public string color { get; private set; }
+        string _color;
+        public string color { 
+            get
+            { 
+                return _color;
+            }
+            set 
+            {
+                _color = value;
+                ColorChange?.Invoke(this);  
+            } 
+        }
         public bool IsVisited { get; private set; } = false;
         public bool IsDirected { get; set; }
         internal static List<Node> nodes = new List<Node>();
-        public IEnumerable<ToEdge> ToNodes
+        
+        public static IReadOnlyList<Node> Nodes
+        {
+            get { return nodes; }
+        }
+        public IReadOnlyList<ToEdge> ToEdges
         {
             get
             {
@@ -30,10 +51,10 @@ namespace GraphLibrary
                     targetThis = edges.Where(x => x.Target == this).Select(x=>new ToEdge(x,false));
 
                 }
-                return sourceThis.Concat(targetThis);
+                return sourceThis.Concat(targetThis).ToList();
             }
         }
-        Dictionary<Node,List<(string?, int?)>> Edges = new Dictionary<Node, List<(string?, int?)>>();
+        
         internal Node(string id,string title = "")
         {
             this.id = id;
@@ -45,7 +66,6 @@ namespace GraphLibrary
             this.id = id;
             this.title = title;
             this.color = color;
-            ColorChange(color);
         }
         public static Node Create(string id, string title = "")
         {
@@ -64,14 +84,11 @@ namespace GraphLibrary
 
             return node;
         }
-        public void ColorChange(string color)
-        {
-            this.color = color;
-            ColorChangeEvent?.Invoke(this);
-        }
+      
 
 
-        public void To(Node node,int weight)
+
+        public void NewTo(Node node,int weight)
         {
             edges.Add(new Edge(this, node, weight));
         }
@@ -90,6 +107,7 @@ namespace GraphLibrary
             {
                 id = this.id,
                 title = this.title,
+                color = this._color
             };
         }
     }
@@ -98,6 +116,7 @@ namespace GraphLibrary
     {
         public string id { get; set; }
         public string title { get; set; }
+        public string color { get; set; }
     }
 
     public class ToEdge
@@ -111,6 +130,7 @@ namespace GraphLibrary
         bool IsTarget = false;
         internal ToEdge(Edge edge, bool isTarget = true)
         {
+            Edge = edge;
             IsTarget = isTarget;
         }
         internal Edge Edge;
@@ -164,6 +184,24 @@ namespace GraphLibrary
                 }
                 ToNodeChange?.Invoke(Edge);
             }
+        }
+
+        public InternalEdge ToInternalEdge()
+        {
+            string wstr = "";
+            if (!(Weight == null || Weight < 0))
+            {
+                wstr = Weight.Value.ToString();
+            }
+            return new InternalEdge
+            {
+                id = Edge.ID,
+                source = Edge.Source.id,
+                target = Edge.Target.id,
+                weight = wstr,
+                color = this.Color
+            };
+
         }
     }
 }
