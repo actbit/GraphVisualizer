@@ -95,7 +95,7 @@ namespace GraphLibrary
 
 
 
-        public void NewTo(Node node,int weight)
+        public void NewToEdge(Node node,int weight)
         {
             edges.Add(new Edge(this, node, weight));
         }

@@ -125,14 +125,14 @@
             var node5 = Node.Create("5", "gray", "5");
             var node6 = Node.Create("6", "gray", "6");
             var node7 = Node.Create("7", "gray", "7");
-            node0.NewTo(node1,-1);
-            node0.NewTo(node2,-1);
-            node2.NewTo(node3,-1);
-            node3.NewTo(node0, -1);
-            node3.NewTo(node4, -1);
-            node4.NewTo(node5, -1);
-            node3.NewTo(node6, -1);
-            node6.NewTo(node1, -1);
+            node0.NewToEdge(node1,-1);
+            node0.NewToEdge(node2,-1);
+            node2.NewToEdge(node3,-1);
+            node3.NewToEdge(node0, -1);
+            node3.NewToEdge(node4, -1);
+            node4.NewToEdge(node5, -1);
+            node3.NewToEdge(node6, -1);
+            node6.NewToEdge(node1, -1);
             EdgeAndNode en = new EdgeAndNode();
             en.Nodes = Node.Nodes.Select(x => new InNodeObject { data = x.ToInternalNode() }).ToList();
             en.Edges = Node.Edges.Select(x => new InEdgeObject { data = x.ToInternalEdge() }).ToList();
@@ -152,7 +152,7 @@
 
         //await JSRuntime.InvokeVoidAsync("isDirected", tmp);
         var node =  Node.Create("a", "blue", "abc");
-        node.NewTo(node,10);
+        node.NewToEdge(node,10);
         var edges = node.ToEdges;
         var d = edges.First().ToInternalEdge();
 
