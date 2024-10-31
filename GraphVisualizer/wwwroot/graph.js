@@ -120,3 +120,4 @@ function isDirected(directed) {
         })
         .update();
 }
+

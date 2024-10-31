@@ -9,6 +9,13 @@ namespace GraphLibrary
 
         }
 
-
+        public static void NextWait()
+        {
+            InternalClass.WaitNext();
+        }
+        public static void Print(string message)
+        {
+            InternalClass.Print(message);
+        }
     }
 }

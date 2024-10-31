@@ -17,13 +17,25 @@ namespace GraphVisualizer
         public Compiler(ScriptLoaderService ScriptLoader)
         {
             scriptLoaderService = ScriptLoader;
-            Task.Run(async () =>
-            {
-                assembles.Add(await ScriptLoader.GetAssemblyMetadataReference(typeof(int).Assembly));
-                assembles.Add(await ScriptLoader.GetAssemblyMetadataReference(typeof(GraphLibrary.Node).Assembly));
+            Setting();
+        }
 
-            });
-            
+        async void Setting()
+        {
+            //var assemblyNames = Assembly.GetEntryAssembly()!.GetReferencedAssemblies();
+
+            //foreach (var name in assemblyNames)
+            //{
+            //    assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(Assembly.Load(name)));
+            //}
+            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(typeof(object).Assembly));
+            var aname = typeof(object).Assembly.FullName;
+            var runtimeAssembly = Assembly.Load(new AssemblyName("System.Runtime"));
+            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(runtimeAssembly));
+
+            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(typeof(int).Assembly));
+            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(typeof(GraphLibrary.Node).Assembly));
+
         }
 
         public string[] Compile(string code, out Assembly? assembly)
@@ -44,14 +56,13 @@ namespace GraphVisualizer
             {
                 assembly = null;
 
-                return result.Diagnostics.Select(x=>$"{ x.Location}:{ x.GetMessage()}").ToArray();
+                return result.Diagnostics.Where(x=>x.IsWarningAsError ==false).Select(x=>$"{ x.Location.GetLineSpan().StartLinePosition}-{x.Location.GetLineSpan().EndLinePosition}:{ x.GetMessage()}").ToArray();
             }
         }
-        public static string BaseCode { get; } = @"
-public System;
-public GraphLibrary;
+        public static string BaseCode { get; } = @"using System;
+using GraphLibrary;
 
-public class Action:GraphAction
+public class ActionAlgorithm:GraphAction
 {
     public override void Action(Node node)
     {
@@ -59,6 +70,25 @@ public class Action:GraphAction
     }
 }
 ";
+
+
+        public static MethodInfo? RunMethodGet(Type baseType, Assembly assembly, string methodName)
+        {
+
+            var types = assembly.GetTypes().Where(x => x.IsSubclassOf(baseType));
+            if (types.Count() > 0)
+            {
+                var type = types.First();
+                var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == methodName);
+                methods = methods.Where(x => x.GetParameters().Length == 1);
+                return methods.FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
+
     
 }

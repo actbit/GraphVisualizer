@@ -64,7 +64,7 @@ Console.WriteLine(""test"")
 
 ";
         var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8).WithKind(SourceCodeKind.Regular);
-        var codeString = SourceText.From(code);
+        var codeString = SourceText.From(Compiler.BaseCode);
         var syntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
 
         var assemblyNames = Assembly.GetEntryAssembly()!.GetReferencedAssemblies();

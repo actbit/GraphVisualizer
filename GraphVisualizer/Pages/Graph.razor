@@ -1,26 +1,29 @@
 ﻿@page "/graph"
+@inject ScriptLoaderService ScriptService
 @using GraphLibrary
 @using System.IO.Compression
+@using GraphVisualizer.Services
+@using System.Reflection
 @inject IJSRuntime JSRuntime
 <div class="control-header">
     <h1 style="font-size:28px">GraphVisualizer</h1>
     
     <div class="form-check form-check-inline" style="align-items: center;">
-        <InputCheckbox class="form-check-input" type="checkbox" id="interval-check" @bind-Value="isIntarval"/>
+        <InputCheckbox class="form-check-input" type="checkbox" id="interval-check" @bind-Value="isInterval"/>
         <label class="form-check-label"  for="interval-check">自動で実行</label>
     </div>
-    @if (isIntarval)
+    @if (isInterval)
     {
         <div class="input-group interval-number">
             <span class="input-group-text">実行間隔</span>
-            <input class="form-control" type="number">
+            <input class="form-control" type="number" @bind-value="RunInterval">
         </div>
     }
 
-    <button class="btn btn-success">実行</button>
-    @if (!isIntarval)
+    <button class="btn btn-success" @onclick="RunProgram">実行</button>
+    @if (!isInterval)
     {
-        <button class="btn btn-success" disabled="disabled">次へ</button>
+        <button class="btn btn-success" disabled="@wait_button_str" @onclick="nextStep">次へ</button>
     }
 
 </div>
@@ -230,7 +233,7 @@
     {
         <div class="over-control code-control">
             <p>C#のコード</p>
-            <button class="btn btn-success">実行</button>
+            <button class="btn btn-success" @onclick="RunProgram">実行</button>
             <textarea class="form-control code-area" @bind="sourceCode"/>
         </div>
     }
@@ -424,7 +427,14 @@
             }
 
         </div>
-        <div id="cy" class="center-item"></div>
+        <div  class="center-item">
+            <div id="cy"></div>
+            <div class="output">
+                <textarea id="output-area" class="form-control output-area" @bind="output">
+
+                </textarea>
+            </div>
+        </div>
         <div class="code-base code-control">
             <p>C#のコード</p>
             <button class="btn btn-success">実行</button>
@@ -502,6 +512,16 @@
         flex-grow: 1;
         min-width:300px;
     }
+    #cy{
+        height: calc(100% - 300px);
+        width:100%;
+    }
+    .output{
+        height:300px;
+    }
+    .output-area{
+        height:100%;
+    }
 
     @@media screen and (max-width:820px) {
         .center-item {
@@ -515,10 +535,6 @@
         }
     }
 
-    #cy{
-    }
-    .lritem {
-    }
 
     .edge{
         height:400px;
@@ -579,7 +595,7 @@
         width:100%;
         height:calc(100% - 120px);
     }
-
+    
     @@media screen and (max-width:680px) {
         .code-base {
             display:none;
@@ -627,7 +643,7 @@
     [Parameter]
     public string? node { get; set; }
 
-
+    string output = "";
     string sourceCode = "";
     string? controlChecked = null;
     bool ControllerMenuVisible
@@ -667,7 +683,7 @@
         }
     }
 
-    bool isIntarval = false;
+    bool isInterval = false;
     bool _isDirected = false;
     bool isDirected
     {
@@ -681,6 +697,7 @@
             Node.IsDirected = value;
         }
     }
+    double RunInterval = 0;
     string createEdgeWarning = "";
     string createEdgeWeighInput ="-1";
     string CreateToEdgeNodeSelected;
@@ -695,6 +712,37 @@
     string createNodeId = "";
     string editNodeTitle = "";
     string warningCreateNode = "";
+    async Task RunProgram()
+    {
+        output = "";
+        Assembly? assembly;
+        var error = Compiler.Compile(sourceCode, out assembly);
+        if(error.Length > 0)
+        {
+            foreach(var e in error)
+            {
+                output += e + "\n";
+            }
+            
+            await JSRuntime.InvokeVoidAsync("moveCursorToEnd", "output-area");
+
+            return;
+        }
+        var methodinfo = Compiler.RunMethodGet(typeof(GraphAction), assembly, "Action");
+        var type = methodinfo.DeclaringType;
+        object myInstance = Activator.CreateInstance(type);
+        Action<Node> action = methodinfo.CreateDelegate<Action<Node>>(myInstance);
+        var startnode = Nodes.Where(x => x.ID == "start").FirstOrDefault();
+        if(startnode == null)
+        {
+            startnode = Nodes.FirstOrDefault();
+        }
+        if(startnode == null)
+        {
+
+        }
+        action.Invoke(startnode);
+    }
 
     void clickViewNodeSetting()
     {
@@ -834,10 +882,13 @@
         editNodeTitle = node.Title;
 
     }
+
+    Compiler Compiler;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            Compiler = new Compiler(ScriptService);
             IsInitialized = false;
             if(base64code != null)
             {
@@ -848,14 +899,14 @@
                 sourceCode = Compiler.BaseCode;
             }
 
-            var node0 =  Node.Create("0", "gray", "0");
+            var node0 =  Node.Create("start", "gray", "start");
             var node1 = Node.Create("1", "gray", "1");
             var node2 = Node.Create("2", "gray", "2");
             var node3 = Node.Create("3", "gray", "3");
             var node4 = Node.Create("4", "gray", "4");
             var node5 = Node.Create("5", "gray", "5");
             var node6 = Node.Create("6", "gray", "6");
-            var node7 = Node.Create("7", "gray", "7");
+            var node7 = Node.Create("end", "gray", "end");
             node0.CreateToEdge(node1,-1);
             node0.CreateToEdge(node2,-1);
             node2.CreateToEdge(node3,-1);
@@ -882,12 +933,58 @@
             Node.CreateEdge= CreateEdge;
             Node.TitleChange = NodeTitleChange;
             Node.DirectedChange = DirectedChange;
+            InternalClass.Wait = WaitProgram;
+            InternalClass.PrintAfter = Print;
             StateHasChanged();
         }
 
     }
-    bool tmp = false;
+    void Print(string str)
+    {
+        
+    }
 
+    bool tmp = false;
+    string? wait_button_str = "disabled";
+    bool wait = true;
+    bool wait_button
+    {
+        get{
+            if (wait_button_str == "disabled")
+            {
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        set
+        {
+            wait_button_str = value ?null:"disabled";
+        }
+    }
+    void nextStep()
+    {
+        wait_button = false;
+        wait = false;
+    }
+    void WaitProgram()
+    {
+        if(isInterval){
+            Task.Delay((int)(1000 * RunInterval));
+
+        }
+        else
+        {
+            wait_button = true;
+            wait = true;
+            while (wait)
+            {
+                Task.Delay(100);
+            }
+        }
+
+    }
 
     async Task click()
     {

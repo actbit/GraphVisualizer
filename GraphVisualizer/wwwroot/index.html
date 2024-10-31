@@ -34,6 +34,16 @@
     <script>navigator.serviceWorker.register('service-worker.js');</script>
     <script src="cytoscape/cytoscape.min.js"></script>
     <script src="graph.js"></script>
+    <script>
+        function moveCursorToEnd(textareaId) {
+
+            var textarea = document.getElementById(textareaId);
+            if (textarea) {
+                textarea.focus();
+                textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+            }
+        }
+    </script>
 </body>
 
 </html>
