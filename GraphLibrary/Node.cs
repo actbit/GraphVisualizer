@@ -12,7 +12,6 @@ namespace GraphLibrary
     {
         public static Action<Node>? ColorChange = null;
         public static Action<Node>? TitleChange = null;
-
         public static Action<Node>? CreateNode = null;
         public static Action<Node>? DeleteNode = null;
         public static Action<Edge>? CreateEdge =null;
