@@ -47,7 +47,7 @@ namespace GraphVisualizer
                 return result.Diagnostics.Select(x=>$"{ x.Location}:{ x.GetMessage()}").ToArray();
             }
         }
-        public string BaseCode = @"
+        public static string BaseCode { get; } = @"
 public System;
 public GraphLibrary;
 

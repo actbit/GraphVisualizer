@@ -15,7 +15,7 @@ namespace GraphLibrary
         public static Action<Node>? CreateNode = null;
         public static Action<Node>? DeleteNode = null;
         public static Action<Edge>? CreateEdge =null;
-
+        public static Action<bool>? DirectedChange = null;
 
         internal static List<Edge> edges = new List<Edge>();
         public static IReadOnlyList<Edge> Edges
@@ -44,7 +44,20 @@ namespace GraphLibrary
             } 
         }
         public bool IsVisited { get; private set; } = false;
-        public bool IsDirected { get; set; }
+        static bool _IsDirected = false;
+        public static bool IsDirected
+        {
+            get
+            {
+                return _IsDirected;
+            }
+            set
+            {
+                _IsDirected = value;
+                DirectedChange?.Invoke(value);
+            }
+        }
+
         internal static List<Node> nodes = new List<Node>();
         
         public static IReadOnlyList<Node> Nodes
