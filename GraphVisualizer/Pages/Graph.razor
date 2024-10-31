@@ -217,10 +217,13 @@
         display:flex;
         justify-items:stretch;
         justify-content: space-between;
-        height:calc(100vh - 110px);
+        height:calc(100vh - 50px);
     }
+
+
+    
     .control-header{
-        height:110px;
+        height:50px;
         background-color:darkgray;
         display:flex;
         justify-content:flex-start;
@@ -230,7 +233,16 @@
         padding:5px 20px;
         box-sizing:border-box;
     }
+    @@media screen and  (max-width:1024px) {
+        .base{
+            height:calc(100vh - 130px);
 
+        }
+        .control-header{
+            height:130px;
+
+        }
+    }
     .interval-number{
         width:200px
     }
