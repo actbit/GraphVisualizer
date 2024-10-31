@@ -2,9 +2,13 @@
 
 namespace GraphLibrary
 {
-    public interface IGraphAction
+    public abstract class GraphAction
     {
-        public void Action();
-        
+        public virtual void Action(Node node)
+        {
+
+        }
+
+
     }
 }

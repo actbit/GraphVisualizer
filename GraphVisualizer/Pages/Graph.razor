@@ -2,85 +2,107 @@
 @using GraphLibrary
 @inject IJSRuntime JSRuntime
 <div class="control-header">
-    <h1 style="font-size:32px">GraphVisualizer</h1>
-    <button class="btn btn-success">実行</button>
-    <div style=" align-items: center;">
-        <InputCheckbox id="check1" @bind-Value="isAutoRunning"></InputCheckbox>
-        <label for="check1">自動で実行</label>
-    </div>
+    <h1 style="font-size:28px">GraphVisualizer</h1>
     
-    <div class="input-group interval-number">
-        <span class="input-group-text">実行間隔</span>
-        <input class="form-control" type="number">
+    <div class="form-check form-check-inline" style="align-items: center;">
+        <InputCheckbox class="form-check-input" type="checkbox" id="interval-check" @bind-Value="isIntarval"/>
+        <label class="form-check-label"  for="interval-check">自動で実行</label>
+    </div>
+    @if (isIntarval)
+    {
+        <div class="input-group interval-number">
+            <span class="input-group-text">実行間隔</span>
+            <input class="form-control" type="number">
+        </div>
+    }
+
+    <button class="btn btn-success">実行</button>
+    @if (!isIntarval)
+    {
+        <button class="btn btn-success" disabled="disabled">次へ</button>
+    }
+
+</div>
+
+<div class="menu-header">
+
+    <div>
+        <input type="radio" class="btn-check" name="open-select" id="select-node" autocomplete="off" @onclick="clickViewNodeSetting" checked="@controlChecked">
+        <label class="btn btn-outline-dark" for="select-node">ノード</label>
+    </div>
+    <div>
+        <input type="radio" class="btn-check" name="open-select" id="select-program" autocomplete="off" @onclick="clickProgramSetting" checked = "@programChecked">
+        <label class="btn btn-outline-dark" for="select-program">プログラム</label>
     </div>
 </div>
-<div class="base">
 
+<div class="control-views">
+    @if (ControllerMenuVisible)
+    {
+        <div class="controller-tab over-control">
 
-    <div class="controller lritem">
+            <button @onclick="click"></button>
+            <div class="border-radius5">
+                <p>node</p>
+                <div class="nodes list-group">
+                    @foreach (var node in Nodes)
+                    {
+                        if (SelectedNode == node)
+                        {
+                            <button type="button" class="list-group-item list-group-item-action active">@(node.id + ":" + node.title)</button>
 
-        <button @onclick="click"></button>
-        <div class="border-radius5">
-            <p>node</p>
-            <div class="nodes list-group">
-                @foreach (var node in Nodes)
+                        }
+                        else
+                        {
+                            <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+
+                        }
+                    }
+
+                </div>
+                @if (SelectedNode != null)
                 {
-                    if (SelectedNode == node)
-                    {
-                        <button type="button" class="list-group-item list-group-item-action active">@(node.id + ":" + node.title)</button>
 
-                    }
-                    else
-                    {
-                        <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+                    <div class="remove">
+                        <span>nodeの削除</span>
+                        <button class="button-right btn btn-danger" @onclick="clickNodeDelete">nodeの削除</button>
 
-                    }
+                    </div>
+                    <div class="edit">
+                        <p>選択中nodeの編集</p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">nodeのタイトル</span>
+                            <input type="text" class="form-control" @bind="editNodeTitle">
+                        </div>
+                        <button class="button-right btn btn-primary" @onclick="clickNodeEdit">nodeの編集</button>
+                    </div>
                 }
 
-            </div>
-            @if(SelectedNode != null)
-            {
 
-                <div class="remove">
-                    <span>nodeの削除</span>
-                    <button class="button-right btn btn-danger" @onclick="clickNodeDelete">nodeの削除</button>
-
-                </div>
-                <div class="edit">
-                    <p>選択中nodeの編集</p>
+                <div class="create">
+                    <p>nodeの追加</p>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">ID</span>
+                        <input type="text" class="form-control" @bind="createNodeId">
+                    </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">nodeのタイトル</span>
-                        <input type="text" class="form-control" @bind = "editNodeTitle">
+                        <input type="text" class="form-control" @bind="createNodeTitle">
                     </div>
-                    <button class="button-right btn btn-primary" @onclick="clickNodeEdit">nodeの編集</button>
-                </div>
-            }
+                    <button class="button-right btn btn-primary" @onclick="clickNodeCreate">nodeの追加</button>
+                    <p style="color:red">@warningCreateNode</p>
 
-
-            <div class="create">
-                <p>nodeの追加</p>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">ID</span>
-                    <input type="text" class="form-control" @bind="createNodeId">
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">nodeのタイトル</span>
-                    <input type="text" class="form-control" @bind="createNodeTitle">
-                </div>
-                <button class="button-right btn btn-primary" @onclick="clickNodeCreate">nodeの追加</button>
-                <p style="color:red">@warningCreateNode</p>
-
             </div>
-        </div>
-        @if (SelectedNode != null)
-        {
-            <div class="border-radius5">
-                <p>edge</p>
-                <div class="edges list-group">
+            @if (SelectedNode != null)
+            {
+                <div class="border-radius5">
+                    <p>edge</p>
+                    <div class="edges list-group">
 
                         @foreach (var edge in SelectedNode.ToEdges)
                         {
-                            if (SelectedToEdge != null&&SelectedToEdge.ID == edge.ID)
+                            if (SelectedToEdge != null && SelectedToEdge.ID == edge.ID)
                             {
                                 <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
 
@@ -91,125 +113,319 @@
 
                             }
                         }
-                
+
+                    </div>
+                    @if (SelectedToEdge != null)
+                    {
+                        <div class="remove">
+                            <span>edgeの削除</span>
+                            <button class="button-right btn btn-danger" @onclick="clickEdgeDelete">edgeを削除</button>
+
+                        </div>
+
+                        <div class="edit">
+
+                            <p>edgeの編集</p>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">edgeの重み</span>
+                                <input class="form-control" type="number" @bind="editEdgeWeighInput">
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">接続先のnode</span>
+                                <select @bind="EditToEdgeNodeSelected" class="form-select" aria-label="Default select example">
+                                    @if (EditToEdgeNodeSelected == null)
+                                    {
+                                        <option value="@("")" selected>nodeの選択</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@("")">nodeの選択</option>
+
+                                    }
+                                    @foreach (var nodeSelect in Nodes)
+                                    {
+                                        @if (EditToEdgeNodeSelected == nodeSelect.id)
+                                        {
+                                            <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+                                        }
+                                        else
+                                        {
+
+                                            <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+
+                                        }
+
+
+                                    }
+
+                                </select>
+                            </div>
+
+                            <button class="button-right btn btn-primary" @onclick="clickEdgeEdit">edgeを編集</button>
+                            <p style="color:red">@editEdgeWarning</p>
+
+
+                        </div>
+
+                    }
+                    <div class="create">
+                        <p>edgeを追加</p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">edgeの重み</span>
+                            <input type="number" class="form-control" @bind="createEdgeWeighInput">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">接続先のnode</span>
+                            <select @bind="CreateToEdgeNodeSelected" class="form-select" aria-label="Default select example">
+                                @if (CreateToEdgeNodeSelected == null || CreateToEdgeNodeSelected == "")
+                                {
+                                    <option value="@("")" selected>nodeの選択</option>
+                                }
+                                else
+                                {
+                                    <option value="@("")">nodeの選択</option>
+
+                                }
+                                @foreach (var nodeSelect in Nodes)
+                                {
+                                    @if (CreateToEdgeNodeSelected == nodeSelect.id)
+                                    {
+                                        <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+                                    }
+                                    else
+                                    {
+
+                                        <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                    }
+
+
+                                }
+
+                            </select>
+                        </div>
+
+                        <button class="button-right btn btn-primary" @onclick="clickEdgeCreate">edgeを追加</button>
+                        <p style="color:red">@createEdgeWarning</p>
+                    </div>
                 </div>
-                @if (SelectedToEdge != null)
+
+            }
+
+
+        </div>
+
+    }
+    else if (ProgramMenuVisible)
+    {
+        <div class="over-control code-control">
+            <p>C#のコード</p>
+            <button class="btn btn-success">実行</button>
+            <textarea class="form-control code-area"/>
+        </div>
+    }
+    <div class="base">
+        <div class="controller lritem">
+
+            <button @onclick="click"></button>
+            <div class="border-radius5">
+                <p>node</p>
+                <div class="nodes list-group">
+                    @foreach (var node in Nodes)
+                    {
+                        if (SelectedNode == node)
+                        {
+                            <button type="button" class="list-group-item list-group-item-action active">@(node.id + ":" + node.title)</button>
+
+                        }
+                        else
+                        {
+                            <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+
+                        }
+                    }
+
+                </div>
+                @if (SelectedNode != null)
                 {
+
                     <div class="remove">
-                        <span>edgeの削除</span>
-                        <button class="button-right btn btn-danger" @onclick="clickEdgeDelete">edgeを削除</button>
+                        <span>nodeの削除</span>
+                        <button class="button-right btn btn-danger" @onclick="clickNodeDelete">nodeの削除</button>
 
                     </div>
-                
-                <div class="edit">
-
-                    <p>edgeの編集</p>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">edgeの重み</span>
-                        <input class="form-control" type="number" @bind="editEdgeWeighInput">
+                    <div class="edit">
+                        <p>選択中nodeの編集</p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">nodeのタイトル</span>
+                            <input type="text" class="form-control" @bind="editNodeTitle">
+                        </div>
+                        <button class="button-right btn btn-primary" @onclick="clickNodeEdit">nodeの編集</button>
                     </div>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">接続先のnode</span>
-                        <select @bind="EditToEdgeNodeSelected" class="form-select" aria-label="Default select example">
-                            @if (EditToEdgeNodeSelected == null)
-                            {
-                                <option value="@("")" selected>nodeの選択</option>
-
-                            }
-                            else
-                            {
-                                <option value="@("")">nodeの選択</option>
-
-                            }
-                            @foreach (var nodeSelect in Nodes)
-                            {
-                                @if (EditToEdgeNodeSelected == nodeSelect.id)
-                                {
-                                    <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
-
-                                }
-                                else
-                                {
-
-                                    <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
-
-
-                                }
-
-
-                            }
-
-                        </select>
-                    </div>
-
-                    <button class="button-right btn btn-primary" @onclick="clickEdgeEdit">edgeを編集</button>
-                    <p style="color:red">@editEdgeWarning</p>
-
-
-                </div>
-
                 }
+
+
                 <div class="create">
-                    <p>edgeを追加</p>
+                    <p>nodeの追加</p>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">edgeの重み</span>
-                        <input type="number" class="form-control" @bind="createEdgeWeighInput">
+                        <span class="input-group-text">ID</span>
+                        <input type="text" class="form-control" @bind="createNodeId">
                     </div>
-
                     <div class="input-group mb-3">
-                        <span class="input-group-text">接続先のnode</span>
-                        <select @bind="CreateToEdgeNodeSelected" class="form-select" aria-label="Default select example">
-                            @if (CreateToEdgeNodeSelected == null || CreateToEdgeNodeSelected == "")
-                            {
-                                <option value="@("")" selected>nodeの選択</option>
-
-                            }
-                            else
-                            {
-                                <option value="@("")">nodeの選択</option>
-
-                            }
-                            @foreach (var nodeSelect in Nodes)
-                            {
-                                @if (CreateToEdgeNodeSelected == nodeSelect.id)
-                                {
-                                    <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
-
-                                }
-                                else
-                                {
-
-                                    <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
-
-
-                                }
-
-
-                            }
-
-                        </select>
+                        <span class="input-group-text">nodeのタイトル</span>
+                        <input type="text" class="form-control" @bind="createNodeTitle">
                     </div>
-
-                    <button class="button-right btn btn-primary" @onclick = "clickEdgeCreate">edgeを追加</button>
-                    <p style="color:red">@createEdgeWarning</p>
-
+                    <button class="button-right btn btn-primary" @onclick="clickNodeCreate">nodeの追加</button>
+                    <p style="color:red">@warningCreateNode</p>
 
                 </div>
             </div>
+            @if (SelectedNode != null)
+            {
+                <div class="border-radius5">
+                    <p>edge</p>
+                    <div class="edges list-group">
 
-        }
+                        @foreach (var edge in SelectedNode.ToEdges)
+                        {
+                            if (SelectedToEdge != null && SelectedToEdge.ID == edge.ID)
+                            {
+                                <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
 
-    </div>
-    <div id="cy" class="center-item"></div>
-    <div class="code-base">
-        <p>C#のコード</p>
-        <button class="btn btn-success">実行</button>
-        <textarea class="form-control">
+                            }
+                            else
+                            {
+                                <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
 
-        </textarea> 
+                            }
+                        }
+
+                    </div>
+                    @if (SelectedToEdge != null)
+                    {
+                        <div class="remove">
+                            <span>edgeの削除</span>
+                            <button class="button-right btn btn-danger" @onclick="clickEdgeDelete">edgeを削除</button>
+
+                        </div>
+
+                        <div class="edit">
+
+                            <p>edgeの編集</p>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">edgeの重み</span>
+                                <input class="form-control" type="number" @bind="editEdgeWeighInput">
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">接続先のnode</span>
+                                <select @bind="EditToEdgeNodeSelected" class="form-select" aria-label="Default select example">
+                                    @if (EditToEdgeNodeSelected == null)
+                                    {
+                                        <option value="@("")" selected>nodeの選択</option>
+
+                                    }
+                                    else
+                                    {
+                                        <option value="@("")">nodeの選択</option>
+
+                                    }
+                                    @foreach (var nodeSelect in Nodes)
+                                    {
+                                        @if (EditToEdgeNodeSelected == nodeSelect.id)
+                                        {
+                                            <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+                                        }
+                                        else
+                                        {
+
+                                            <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+
+                                        }
+
+
+                                    }
+
+                                </select>
+                            </div>
+
+                            <button class="button-right btn btn-primary" @onclick="clickEdgeEdit">edgeを編集</button>
+                            <p style="color:red">@editEdgeWarning</p>
+
+
+                        </div>
+
+                    }
+                    <div class="create">
+                        <p>edgeを追加</p>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">edgeの重み</span>
+                            <input type="number" class="form-control" @bind="createEdgeWeighInput">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">接続先のnode</span>
+                            <select @bind="CreateToEdgeNodeSelected" class="form-select" aria-label="Default select example">
+                                @if (CreateToEdgeNodeSelected == null || CreateToEdgeNodeSelected == "")
+                                {
+                                    <option value="@("")" selected>nodeの選択</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@("")">nodeの選択</option>
+
+                                }
+                                @foreach (var nodeSelect in Nodes)
+                                {
+                                    @if (CreateToEdgeNodeSelected == nodeSelect.id)
+                                    {
+                                        <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+                                    }
+                                    else
+                                    {
+
+                                        <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+
+
+                                    }
+
+
+                                }
+
+                            </select>
+                        </div>
+
+                        <button class="button-right btn btn-primary" @onclick="clickEdgeCreate">edgeを追加</button>
+                        <p style="color:red">@createEdgeWarning</p>
+
+
+                    </div>
+                </div>
+
+            }
+
+        </div>
+        <div id="cy" class="center-item"></div>
+        <div class="code-base code-control">
+            <p>C#のコード</p>
+            <button class="btn btn-success">実行</button>
+            <textarea class="form-control code-area">
+
+            </textarea>
+        </div>
+
     </div>
 </div>
+
 
 
 <style>
@@ -227,24 +443,41 @@
         background-color:darkgray;
         display:flex;
         justify-content:flex-start;
+        align-items:center;
         gap:20px;
         flex-wrap:wrap;
         text-align:center;
         padding:5px 20px;
         box-sizing:border-box;
     }
-    @@media screen and  (max-width:1024px) {
+
+    .menu-header {
+
+        display: none;
+    }
+    @@media screen and  (max-width:680px) {
         .base{
-            height:calc(100vh - 130px);
+            height:calc(100vh - 130px - 60px);
 
         }
         .control-header{
             height:130px;
 
         }
+
+        .menu-header {
+            box-sizing: border-box;
+            padding: 10px;
+            height: 60px;
+            width: 100%;
+            display: flex;
+            gap:20px;
+            background-color:#AAAAAA;
+        }
     }
     .interval-number{
         width:200px
+        
     }
     .controller{
         background-color:lightgray;
@@ -252,12 +485,28 @@
         overflow: auto;
         overflow-y: scroll;
         width: 400px;
+        min-width:300px;
     }
 
     .center-item {
         flex-grow: 1;
+        min-width:300px;
     }
 
+    @@media screen and (max-width:820px) {
+        .center-item {
+            min-width: 200px;
+        }
+    }
+
+    @@media screen and (max-width:500px) {
+        .center-item {
+            min-width: 30px;
+        }
+    }
+
+    #cy{
+    }
     .lritem {
     }
 
@@ -266,6 +515,7 @@
     }
     .nodes{
         max-height:200px;
+        
         overflow: auto;
         overflow-y: scroll;
     }
@@ -306,15 +556,100 @@
         margin-left: auto;
         margin-right:0;
     }
-
-    .code-base{
-        width:500px;
+    .code-control{
+        background-color:white;
     }
-    .code-area{
+    .code-base{
+        width:400px;
+        min-width: 200px;
+
+    }
+    .code-area
+    {
         width:100%;
+        height:calc(100% - 120px);
+    }
+
+    @@media screen and (max-width:680px) {
+        .code-base {
+            display:none;
+        }
+
+        .controller {
+            display:none;
+        }
+    }
+
+    .controller-tab {
+        position:sticky;
+        width:100vw;
+        top:0;
+        left:0;
+    }
+    .over-control {
+        display:none;
+    }
+    @@media screen and  (max-width:680px){
+        .over-control {
+            display:block;
+            position: absolute;
+            
+            width: 100vw;
+            top: 0;
+            left: 0;
+            height: 70vh;
+            background-color: white;
+            z-index: 999;
+        }
+    }
+
+    
+
+    .control-views{
+        position:relative;
     }
 </style>
 @code {
+    string? controlChecked = null;
+    bool ControllerMenuVisible
+    {
+        get{
+            if(controlChecked == "checked")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        set
+        {
+            controlChecked = value ? "checked" : null;
+        }
+    }
+    string? programChecked = null    ;
+    bool ProgramMenuVisible
+    {
+        get
+        {
+            if (programChecked == "checked")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        set
+        {
+            programChecked = value ? "checked" : null;
+        }
+    }
+
+    bool isIntarval = false;
+
     string createEdgeWarning = "";
     string createEdgeWeighInput ="-1";
     string CreateToEdgeNodeSelected;
@@ -329,7 +664,28 @@
     string createNodeId = "";
     string editNodeTitle = "";
     string warningCreateNode = "";
+
+    void clickViewNodeSetting()
+    {
+        ControllerMenuVisible = !ControllerMenuVisible;
+        if (ControllerMenuVisible)
+        {
+            ProgramMenuVisible = false;
+        }
+        StateHasChanged();
+    }
+    void clickProgramSetting()
+    {
+        ProgramMenuVisible = !ProgramMenuVisible;
+        if (ProgramMenuVisible)
+        {
+            ControllerMenuVisible = false;
+        }
+    }
+
     bool _isAutoRunning;
+
+
     bool isAutoRunning
     {
         get
