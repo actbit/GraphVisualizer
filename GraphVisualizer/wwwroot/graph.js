@@ -58,6 +58,7 @@ function getRandomPosition() {
         x: pan.x + Math.random() * width / zoom,
         y: pan.y + Math.random() * height / zoom
     };
+
 }
 function removeAtId(id) {
     CY.getElementById(id).remove();
