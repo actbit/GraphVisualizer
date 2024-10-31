@@ -47,5 +47,18 @@ namespace GraphVisualizer
                 return result.Diagnostics.Select(x=>$"{ x.Location}:{ x.GetMessage()}").ToArray();
             }
         }
+        public string BaseCode = @"
+public System;
+public GraphLibrary;
+
+public class Action:GraphAction
+{
+    public override void Action(Node node)
+    {
+        // ここにアルゴリズムを記載する。
     }
+}
+";
+    }
+    
 }
