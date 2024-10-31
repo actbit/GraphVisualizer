@@ -1,10 +1,24 @@
 ﻿@page "/graph"
 @using GraphLibrary
 @inject IJSRuntime JSRuntime
+<div class="control-header">
+    <h1 style="font-size:32px">GraphVisualizer</h1>
+    <button class="btn btn-success">実行</button>
+    <div style=" align-items: center;">
+        <InputCheckbox id="check1" @bind-Value="isAutoRunning"></InputCheckbox>
+        <label for="check1">自動で実行</label>
+    </div>
+    
+    <div class="input-group interval-number">
+        <span class="input-group-text">実行間隔</span>
+        <input class="form-control" type="number">
+    </div>
+</div>
 <div class="base">
+
+
     <div class="controller lritem">
 
-        
         <button @onclick="click"></button>
         <div class="border-radius5">
             <p>node</p>
@@ -130,7 +144,7 @@
                     </div>
 
                     <button class="button-right btn btn-primary" @onclick="clickEdgeEdit">edgeを編集</button>
-                        <p style="color:red">@editEdgeWarning</p>
+                    <p style="color:red">@editEdgeWarning</p>
 
 
                 </div>
@@ -188,7 +202,12 @@
 
     </div>
     <div id="cy" class="center-item"></div>
-    <div class="lritem">
+    <div class="code-base">
+        <p>C#のコード</p>
+        <button class="btn btn-success">実行</button>
+        <textarea class="form-control">
+
+        </textarea> 
     </div>
 </div>
 
@@ -198,9 +217,23 @@
         display:flex;
         justify-items:stretch;
         justify-content: space-between;
-        height:100vh;
+        height:calc(100vh - 110px);
+    }
+    .control-header{
+        height:110px;
+        background-color:darkgray;
+        display:flex;
+        justify-content:flex-start;
+        gap:20px;
+        flex-wrap:wrap;
+        text-align:center;
+        padding:5px 20px;
+        box-sizing:border-box;
     }
 
+    .interval-number{
+        width:200px
+    }
     .controller{
         background-color:lightgray;
         padding:10px;
@@ -261,6 +294,13 @@
         margin-left: auto;
         margin-right:0;
     }
+
+    .code-base{
+        width:500px;
+    }
+    .code-area{
+        width:100%;
+    }
 </style>
 @code {
     string createEdgeWarning = "";
@@ -277,6 +317,19 @@
     string createNodeId = "";
     string editNodeTitle = "";
     string warningCreateNode = "";
+    bool _isAutoRunning;
+    bool isAutoRunning
+    {
+        get
+        {
+            return _isAutoRunning;
+        }
+        set
+        {
+            _isAutoRunning = value;
+        }
+    }
+
     void clickNodeDelete()
     {
         SelectedNode.Delete();
