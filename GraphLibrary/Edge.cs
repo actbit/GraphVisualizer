@@ -36,8 +36,8 @@ namespace GraphLibrary
             return new InternalEdge
             {
                 id = ID,
-                source = Source.id,
-                target = Target.id,
+                source = Source.ID,
+                target = Target.ID,
                 weight = wstr,
                 color = this.Color
             };

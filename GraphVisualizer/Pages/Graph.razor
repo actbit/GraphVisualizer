@@ -54,12 +54,12 @@
                     {
                         if (SelectedNode == node)
                         {
-                            <button type="button" class="list-group-item list-group-item-action active">@(node.id + ":" + node.title)</button>
+                            <button type="button" class="list-group-item list-group-item-action active">@(node.ID + ":" + node.Title)</button>
 
                         }
                         else
                         {
-                            <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+                            <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.ID + ":" + node.Title)</button>
 
                         }
                     }
@@ -109,12 +109,12 @@
                         {
                             if (SelectedToEdge != null && SelectedToEdge.ID == edge.ID)
                             {
-                                <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+                                <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.ID}:{SelectedNode.Title}) - ({edge.ToNode.ID}:{edge.ToNode.Title})")</button>
 
                             }
                             else
                             {
-                                <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+                                <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.ID}:{SelectedNode.Title}) - ({edge.ToNode.ID}:{edge.ToNode.Title})")</button>
 
                             }
                         }
@@ -151,15 +151,15 @@
                                     }
                                     @foreach (var nodeSelect in Nodes)
                                     {
-                                        @if (EditToEdgeNodeSelected == nodeSelect.id)
+                                        @if (EditToEdgeNodeSelected == nodeSelect.ID)
                                         {
-                                            <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                            <option value="@nodeSelect.ID" selected>@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
                                         }
                                         else
                                         {
 
-                                            <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                            <option value="@nodeSelect.ID">@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
 
                                         }
@@ -198,15 +198,15 @@
                                 }
                                 @foreach (var nodeSelect in Nodes)
                                 {
-                                    @if (CreateToEdgeNodeSelected == nodeSelect.id)
+                                    @if (CreateToEdgeNodeSelected == nodeSelect.ID)
                                     {
-                                        <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                        <option value="@nodeSelect.ID" selected>@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
                                     }
                                     else
                                     {
 
-                                        <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                        <option value="@nodeSelect.ID">@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
                                     }
 
 
@@ -250,12 +250,12 @@
                     {
                         if (SelectedNode == node)
                         {
-                            <button type="button" class="list-group-item list-group-item-action active">@(node.id + ":" + node.title)</button>
+                            <button type="button" class="list-group-item list-group-item-action active">@(node.ID + ":" + node.Title)</button>
 
                         }
                         else
                         {
-                            <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.id + ":" + node.title)</button>
+                            <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.ID + ":" + node.Title)</button>
 
                         }
                     }
@@ -305,12 +305,12 @@
                         {
                             if (SelectedToEdge != null && SelectedToEdge.ID == edge.ID)
                             {
-                                <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+                                <button type="button" class="list-group-item list-group-item-action active">@($"({SelectedNode.ID}:{SelectedNode.Title}) - ({edge.ToNode.ID}:{edge.ToNode.Title})")</button>
 
                             }
                             else
                             {
-                                <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.id}:{SelectedNode.title}) - ({edge.ToNode.id}:{edge.ToNode.title})")</button>
+                                <button type="button" @onclick="()=>SelectToEdge(edge)" class="list-group-item list-group-item-action">@($"({SelectedNode.ID}:{SelectedNode.Title}) - ({edge.ToNode.ID}:{edge.ToNode.Title})")</button>
 
                             }
                         }
@@ -347,15 +347,15 @@
                                     }
                                     @foreach (var nodeSelect in Nodes)
                                     {
-                                        @if (EditToEdgeNodeSelected == nodeSelect.id)
+                                        @if (EditToEdgeNodeSelected == nodeSelect.ID)
                                         {
-                                            <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                            <option value="@nodeSelect.ID" selected>@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
                                         }
                                         else
                                         {
 
-                                            <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                            <option value="@nodeSelect.ID">@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
 
                                         }
@@ -395,15 +395,15 @@
                                 }
                                 @foreach (var nodeSelect in Nodes)
                                 {
-                                    @if (CreateToEdgeNodeSelected == nodeSelect.id)
+                                    @if (CreateToEdgeNodeSelected == nodeSelect.ID)
                                     {
-                                        <option value="@nodeSelect.id" selected>@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                        <option value="@nodeSelect.ID" selected>@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
                                     }
                                     else
                                     {
 
-                                        <option value="@nodeSelect.id">@($"{nodeSelect.id}:{nodeSelect.title}")</option>
+                                        <option value="@nodeSelect.ID">@($"{nodeSelect.ID}:{nodeSelect.Title}")</option>
 
 
                                     }
@@ -735,7 +735,7 @@
     }
     void clickNodeCreate()
     {
-        if(Nodes.Where(x=>x.id == createNodeId).Count() > 0)
+        if(Nodes.Where(x=>x.ID == createNodeId).Count() > 0)
         {
             warningCreateNode = "存在するIDです。";
 
@@ -747,14 +747,14 @@
     }
     void clickNodeEdit()
     {
-        SelectedNode.title = editNodeTitle;
+        SelectedNode.Title = editNodeTitle;
     }
     void SelectToEdge(ToEdge toEdge)
     {
 
         SelectedToEdge = toEdge;
         editEdgeWeighInput = toEdge.Weight.ToString();
-        EditToEdgeNodeSelected = toEdge.ToNode.id;
+        EditToEdgeNodeSelected = toEdge.ToNode.ID;
         StateHasChanged();
     }
 
@@ -768,7 +768,7 @@
 
             return;
         }
-        var targetNode = Nodes.Where(x => x.id == CreateToEdgeNodeSelected).FirstOrDefault();
+        var targetNode = Nodes.Where(x => x.ID == CreateToEdgeNodeSelected).FirstOrDefault();
         if(targetNode == default(Node))
         {
             if (CreateToEdgeNodeSelected == null || CreateToEdgeNodeSelected == "")
@@ -784,7 +784,7 @@
 
             return;
         }
-        SelectedNode.NewToEdge(targetNode, weight);
+        SelectedNode.CreateToEdge(targetNode, weight);
         StateHasChanged();
     }
     void clickEdgeDelete()
@@ -802,7 +802,7 @@
             editEdgeWarning = "edgeの重みは数値にしてください";
             return;
         }
-        var targetNode = Nodes.Where(x => x.id == EditToEdgeNodeSelected).FirstOrDefault();
+        var targetNode = Nodes.Where(x => x.ID == EditToEdgeNodeSelected).FirstOrDefault();
         if (targetNode == default(Node))
         {
             if(EditToEdgeNodeSelected == null||EditToEdgeNodeSelected == "")
@@ -831,7 +831,7 @@
         SelectedToEdge = null;
         createEdgeWeighInput = "-1";
         CreateToEdgeNodeSelected = "";
-        editNodeTitle = node.title;
+        editNodeTitle = node.Title;
 
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -856,15 +856,15 @@
             var node5 = Node.Create("5", "gray", "5");
             var node6 = Node.Create("6", "gray", "6");
             var node7 = Node.Create("7", "gray", "7");
-            node0.NewToEdge(node1,-1);
-            node0.NewToEdge(node2,-1);
-            node2.NewToEdge(node3,-1);
-            node3.NewToEdge(node0, -1);
-            node3.NewToEdge(node4, -1);
-            node4.NewToEdge(node5, -1);
-            node3.NewToEdge(node6, -1);
-            node6.NewToEdge(node1, -1);
-            node2.NewToEdge(node7, -1);
+            node0.CreateToEdge(node1,-1);
+            node0.CreateToEdge(node2,-1);
+            node2.CreateToEdge(node3,-1);
+            node3.CreateToEdge(node0, -1);
+            node3.CreateToEdge(node4, -1);
+            node4.CreateToEdge(node5, -1);
+            node3.CreateToEdge(node6, -1);
+            node6.CreateToEdge(node1, -1);
+            node2.CreateToEdge(node7, -1);
 
             EdgeAndNode en = new EdgeAndNode();
             Nodes = Node.Nodes.ToList();
@@ -963,7 +963,7 @@
         {
             SelectedNode = null;
         }
-        await JSRuntime.InvokeVoidAsync("removeAtId", node.id);
+        await JSRuntime.InvokeVoidAsync("removeAtId", node.ID);
 
         StateHasChanged();
     }

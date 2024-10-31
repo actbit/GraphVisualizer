@@ -25,14 +25,14 @@ namespace GraphLibrary
 
         public static bool ContainsID(string id)
         {
-            var node = nodes.Where(x => x.id == id).FirstOrDefault();
+            var node = nodes.Where(x => x.ID == id).FirstOrDefault();
             return node != null;
         }
-        public string id {  get; private set; }
+        public string ID {  get; private set; }
         public string _title;
-        public string title { get { return _title; } set { _title =value;TitleChange?.Invoke(this); } }
+        public string Title { get { return _title; } set { _title =value;TitleChange?.Invoke(this); } }
         string _color = "#666";
-        public string color { 
+        public string Color { 
             get
             { 
                 return _color;
@@ -81,15 +81,15 @@ namespace GraphLibrary
         
         internal Node(string id,string title = "")
         {
-            this.id = id;
-            this.title = title;
+            this.ID = id;
+            this.Title = title;
             
         }
         internal Node(string id,string color, string title = "")
         {
-            this.id = id;
-            this.title = title;
-            this.color = color;
+            this.ID = id;
+            this.Title = title;
+            this.Color = color;
         }
         public static Node Create(string id, string title = "")
         {
@@ -112,7 +112,7 @@ namespace GraphLibrary
 
 
 
-        public void NewToEdge(Node node,int weight)
+        public void CreateToEdge(Node node,int weight)
         {
             var edge = new Edge(this, node, weight);
             edges.Add(edge);
@@ -133,8 +133,8 @@ namespace GraphLibrary
         {
             return new InternalNode
             {
-                id = this.id,
-                title = this.title,
+                id = this.ID,
+                title = this.Title,
                 color = this._color
             };
         }
