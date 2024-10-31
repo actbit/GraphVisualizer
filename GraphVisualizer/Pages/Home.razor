@@ -42,82 +42,14 @@ namespace RoslynCompileSample
 }";
     string code = @"
 using System;
-using ClassLibrary1;
-
 namespace test11
 {
     public class Test1
     {
         public int Check()
         {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }
-    public class Test2
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }
-    public class Test3
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }
-    public class Test4
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }    public class Test5
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }    public class Test6
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }    public class Test7
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }    public class Test8
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }    public class Test9
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
-        }
-    }    public class Test10
-    {
-        public int Check()
-        {
-            Class1 c1 = new Class1();
-            return c1.Add(10,20);
+            
+            return 10 + 20;
         }
     }
 }
@@ -167,7 +99,7 @@ Console.WriteLine(""test"")
                     var test1instance = Activator.CreateInstance(test1);
                     var addMethod = test1.GetMethod("Check");
                     var r = (int)addMethod.Invoke(test1instance, new object[0]);
-
+                    Console.WriteLine(r);
                 }
                 else
                 {
