@@ -1,31 +1,32 @@
 ﻿@page "/graph"
 @inject ScriptLoaderService ScriptService
+@inject NavigationManager navigation
 @using GraphLibrary
 @using System.IO.Compression
 @using GraphVisualizer.Services
 @using System.Reflection
+@using System.Text.Json
+@using System.Text.Encodings.Web
+@using System.Text.Unicode
 @inject IJSRuntime JSRuntime
 <div class="control-header">
     <h1 style="font-size:28px">GraphVisualizer</h1>
     
-    <div class="form-check form-check-inline" style="align-items: center;">
-        <InputCheckbox class="form-check-input" type="checkbox" id="interval-check" @bind-Value="isInterval"/>
-        <label class="form-check-label"  for="interval-check">自動で実行</label>
-    </div>
-    @if (isInterval)
+    @if(NowAction == null)
     {
-        <div class="input-group interval-number">
-            <span class="input-group-text">実行間隔</span>
-            <input class="form-control" type="number" @bind-value="RunInterval">
-        </div>
-    }
+        <button class="btn btn-success" @onclick="RunProgram">実行</button>
 
-    <button class="btn btn-success" @onclick="RunProgram">実行</button>
+    }
+    else
+    {
+        <button class="btn btn-danger" @onclick="StopProgram">停止</button>
+
+    }
     @if (!isInterval)
     {
         <button class="btn btn-success" disabled="@wait_button_str" @onclick="nextStep">次へ</button>
     }
-
+    
 </div>
 
 <div class="menu-header">
@@ -39,7 +40,12 @@
         <label class="btn btn-outline-dark" for="select-program">プログラム</label>
     </div>
 </div>
-
+<div class="url-block">
+    <div class="input-group mb-3">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon1" @onclick="CreateURL">URLを生成</button>
+        <input type="text" class="form-control" @bind-value="url"  readonly aria-describedby="button-addon1">
+    </div>
+</div>
 <div class="control-views">
     @if (ControllerMenuVisible)
     {
@@ -63,7 +69,7 @@
                         else
                         {
                             <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.ID + ":" + node.Title)</button>
-
+                            
                         }
                     }
 
@@ -233,7 +239,6 @@
     {
         <div class="over-control code-control">
             <p>C#のコード</p>
-            <button class="btn btn-success" @onclick="RunProgram">実行</button>
             <textarea class="form-control code-area" @bind="sourceCode"/>
         </div>
     }
@@ -430,7 +435,7 @@
         <div  class="center-item">
             <div id="cy"></div>
             <div class="output">
-                <textarea id="output-area" class="form-control output-area" @bind="output">
+                <textarea id="output-area" class="form-control output-area" style="color:@(outputColor)" readonly @bind="output">
 
                 </textarea>
             </div>
@@ -453,7 +458,7 @@
         display:flex;
         justify-items:stretch;
         justify-content: space-between;
-        height:calc(100vh - 50px);
+        height:calc(100vh - 50px - 40px);
     }
 
 
@@ -513,7 +518,7 @@
         min-width:300px;
     }
     #cy{
-        height: calc(100% - 300px);
+        height: calc(100% - 300px - 40px);
         width:100%;
     }
     .output{
@@ -593,7 +598,7 @@
     .code-area
     {
         width:100%;
-        height:calc(100% - 120px);
+        height: calc(100% - 120px - 40px);
     }
     
     @@media screen and (max-width:680px) {
@@ -605,7 +610,9 @@
             display:none;
         }
     }
-
+    .url-block{
+        height:40px;
+    }
     .controller-tab {
         position:sticky;
         width:100vw;
@@ -642,10 +649,27 @@
     [SupplyParameterFromQuery]
     [Parameter]
     public string? node { get; set; }
-
+    string url = "";
     string output = "";
     string sourceCode = "";
     string? controlChecked = null;
+    string baseAddress = "";
+    async Task CreateURL()
+    {
+        var baseurl = navigation.Uri.Split('?').First();
+        JsonNodeEdge jsonNodeEdge = new JsonNodeEdge();
+        jsonNodeEdge.ToDirect = isDirected;
+        jsonNodeEdge.Edges = Node.Edges.Select(x => x.ToInternalEdge()).ToList();
+        jsonNodeEdge.Nodes = Node.Nodes.Select(x => x.ToInternalNode()).ToList();
+        var jsonString = JsonSerializer.Serialize(jsonNodeEdge,options);
+        var d = JsonSerializer.Deserialize<JsonNodeEdge>(jsonString,options);
+        string json =await CodeChange.CodeToParameter(jsonString);
+        string source = await CodeChange.CodeToParameter(sourceCode);
+        string sss = await CodeChange.ParameterToCode(source);
+
+        url = baseurl + $"?base64code={source}";
+
+    }
     bool ControllerMenuVisible
     {
         get{
@@ -712,8 +736,24 @@
     string createNodeId = "";
     string editNodeTitle = "";
     string warningCreateNode = "";
-    async Task RunProgram()
+    string outputColor = "black";
+
+    void StopProgram()
     {
+
+        NowNode = null;
+        NowAction = null;
+        wait_button = false;
+    }
+    void clear()
+    {
+        Nodes.ForEach(x => { x.Color = "#666"; x.IsVisited = false; });
+        Nodes.ForEach(x => x.ToEdges.ToList().ForEach(x => x.Color = "#ccc"));
+    }
+    async void RunProgram()
+    {
+        clear();
+        outputColor = "black";
         output = "";
         Assembly? assembly;
         var error = Compiler.Compile(sourceCode, out assembly);
@@ -723,15 +763,15 @@
             {
                 output += e + "\n";
             }
-            
+            outputColor = "red";
             await JSRuntime.InvokeVoidAsync("moveCursorToEnd", "output-area");
 
             return;
         }
         var methodinfo = Compiler.RunMethodGet(typeof(GraphAction), assembly, "Action");
         var type = methodinfo.DeclaringType;
-        object myInstance = Activator.CreateInstance(type);
-        Action<Node> action = methodinfo.CreateDelegate<Action<Node>>(myInstance);
+        instance = Activator.CreateInstance(type);
+        Func<Node,Node> action = methodinfo.CreateDelegate<Func<Node?,Node>>(instance);
         var startnode = Nodes.Where(x => x.ID == "start").FirstOrDefault();
         if(startnode == null)
         {
@@ -739,11 +779,41 @@
         }
         if(startnode == null)
         {
+            return;
+        }
+        NowAction = action;
+        NowNode = NowAction.Invoke(startnode);
+        wait_button = true;
+        if (NowNode != null)
+        {
+            wait_button = true;
+        }
+        else
+        {
+            StopProgram();
 
         }
-        action.Invoke(startnode);
+    }
+    Object instance;
+    Node NowNode = null;
+    Func<Node?, Node>? NowAction = null;
+    void nextStep()
+    {
+        wait_button = false;
+        NowNode = NowAction.Invoke(NowNode);
+        if(NowNode != null)
+        {
+            wait_button = true;
+        }
+        else
+        {
+            StopProgram();
+
+        }
+        StateHasChanged();
     }
 
+    bool isMoved = false;
     void clickViewNodeSetting()
     {
         ControllerMenuVisible = !ControllerMenuVisible;
@@ -882,40 +952,81 @@
         editNodeTitle = node.Title;
 
     }
-
+    JsonSerializerOptions options = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            
+        };
     Compiler Compiler;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+
             Compiler = new Compiler(ScriptService);
             IsInitialized = false;
             if(base64code != null)
             {
-                string code = await CodeChange.ParameterToCode(base64code);
+                string code = "";
+                try{
+                    code = await CodeChange.ParameterToCode(base64code);
+
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
                 sourceCode = code;
             }
             else{
                 sourceCode = Compiler.BaseCode;
             }
+            bool direct = false;
+            if(node !=null){
 
-            var node0 =  Node.Create("start", "gray", "start");
-            var node1 = Node.Create("1", "gray", "1");
-            var node2 = Node.Create("2", "gray", "2");
-            var node3 = Node.Create("3", "gray", "3");
-            var node4 = Node.Create("4", "gray", "4");
-            var node5 = Node.Create("5", "gray", "5");
-            var node6 = Node.Create("6", "gray", "6");
-            var node7 = Node.Create("end", "gray", "end");
-            node0.CreateToEdge(node1,-1);
-            node0.CreateToEdge(node2,-1);
-            node2.CreateToEdge(node3,-1);
-            node3.CreateToEdge(node0, -1);
-            node3.CreateToEdge(node4, -1);
-            node4.CreateToEdge(node5, -1);
-            node3.CreateToEdge(node6, -1);
-            node6.CreateToEdge(node1, -1);
-            node2.CreateToEdge(node7, -1);
+                node = await CodeChange.ParameterToCode(node);
+                var data = JsonSerializer.Deserialize<JsonNodeEdge>(node,options);
+                direct = data.ToDirect;
+
+                data.Nodes.ForEach(x => Node.Create(x.id, x.color, x.title));
+                var nodes = Node.Nodes.ToList();
+                data.Edges.ForEach(x =>
+                {
+                    var node1 = nodes.Where(y => x.source == y.ID).FirstOrDefault();
+                    var node2 = nodes.Where(y => x.target == y.ID).FirstOrDefault();
+
+                    if(node1 != null)
+                    {
+                        node1.CreateToEdge(node2, int.Parse(x.weight));
+                    }
+                });
+            }
+            else
+            {
+                var node0 = Node.Create("start", "#666", "start");
+                var node1 = Node.Create("1", "#666", "1");
+                var node2 = Node.Create("2", "#666", "2");
+                var node3 = Node.Create("3", "#666", "3");
+                var node4 = Node.Create("4", "#666", "4");
+                var node5 = Node.Create("5", "#666", "5");
+                var node6 = Node.Create("6", "#666", "6");
+                var node7 = Node.Create("end", "#666", "end");
+                node0.CreateToEdge(node1, -1);
+                node0.CreateToEdge(node2, -1);
+                node2.CreateToEdge(node3, -1);
+                node3.CreateToEdge(node0, -1);
+                node3.CreateToEdge(node4, -1);
+                node4.CreateToEdge(node5, -1);
+                node3.CreateToEdge(node6, -1);
+                node3.CreateToEdge(node5, -1);
+
+                node6.CreateToEdge(node1, -1);
+                node4.CreateToEdge(node7, -1);
+            }
+
+
 
             EdgeAndNode en = new EdgeAndNode();
             Nodes = Node.Nodes.ToList();
@@ -933,15 +1044,17 @@
             Node.CreateEdge= CreateEdge;
             Node.TitleChange = NodeTitleChange;
             Node.DirectedChange = DirectedChange;
-            InternalClass.Wait = WaitProgram;
             InternalClass.PrintAfter = Print;
             StateHasChanged();
         }
 
     }
-    void Print(string str)
+    async void Print(string str)
     {
-        
+        this.output += str + "\n";
+        await JSRuntime.InvokeVoidAsync("moveCursorToEnd", "output-area");
+        StateHasChanged();
+
     }
 
     bool tmp = false;
@@ -963,15 +1076,14 @@
             wait_button_str = value ?null:"disabled";
         }
     }
-    void nextStep()
-    {
-        wait_button = false;
-        wait = false;
-    }
+
+
     void WaitProgram()
     {
         if(isInterval){
+            
             Task.Delay((int)(1000 * RunInterval));
+            StateHasChanged();
 
         }
         else
@@ -981,6 +1093,8 @@
             while (wait)
             {
                 Task.Delay(100);
+
+
             }
         }
 

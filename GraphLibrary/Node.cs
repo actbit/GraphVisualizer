@@ -43,7 +43,7 @@ namespace GraphLibrary
                 ColorChange?.Invoke(this);  
             } 
         }
-        public bool IsVisited { get; private set; } = false;
+        public bool IsVisited { get; set; } = false;
         static bool _IsDirected = false;
         public static bool IsDirected
         {
@@ -78,7 +78,17 @@ namespace GraphLibrary
                 return sourceThis.Concat(targetThis).ToList();
             }
         }
-        
+        public void VisitedColorChange(string color)
+        {
+            foreach(var edge in ToEdges)
+            {
+                if (edge.ToNode.IsVisited)
+                {
+                    edge.ToNode.Color = color;
+                    edge.Color = color;
+                }
+            }
+        }
         internal Node(string id,string title = "")
         {
             this.ID = id;

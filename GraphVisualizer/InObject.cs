@@ -16,4 +16,11 @@ namespace GraphVisualizer
         public List<InNodeObject> Nodes { get; set; }
         public List<InEdgeObject> Edges{ get; set; }
     }
+    public class JsonNodeEdge
+    {
+        public bool ToDirect = false;
+        public List<InternalNode> Nodes { get; set; }
+        public List<InternalEdge> Edges { get; set; }
+
+    }
 }

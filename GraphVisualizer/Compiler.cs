@@ -12,7 +12,7 @@ namespace GraphVisualizer
     {
         List<MetadataReference> assembles = new List<MetadataReference>();
         CSharpCompilationOptions compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,concurrentBuild: false,optimizationLevel: OptimizationLevel.Release);
-        CSharpParseOptions options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8).WithKind(SourceCodeKind.Regular);
+        CSharpParseOptions options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp11).WithKind(SourceCodeKind.Regular);
         ScriptLoaderService scriptLoaderService;
         public Compiler(ScriptLoaderService ScriptLoader)
         {
@@ -22,19 +22,15 @@ namespace GraphVisualizer
 
         async void Setting()
         {
-            //var assemblyNames = Assembly.GetEntryAssembly()!.GetReferencedAssemblies();
+            compilationOptions=compilationOptions.WithNullableContextOptions(NullableContextOptions.Disable);
+            var assemblyNames = Assembly.GetEntryAssembly()!.GetReferencedAssemblies();
 
-            //foreach (var name in assemblyNames)
-            //{
-            //    assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(Assembly.Load(name)));
-            //}
-            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(typeof(object).Assembly));
-            var aname = typeof(object).Assembly.FullName;
-            var runtimeAssembly = Assembly.Load(new AssemblyName("System.Runtime"));
-            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(runtimeAssembly));
+            foreach (var name in assemblyNames)
+            {
+                assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(Assembly.Load(name)));
+            }
 
             assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(typeof(int).Assembly));
-            assembles.Add(await scriptLoaderService.GetAssemblyMetadataReference(typeof(GraphLibrary.Node).Assembly));
 
         }
 
@@ -64,7 +60,7 @@ using GraphLibrary;
 
 public class ActionAlgorithm:GraphAction
 {
-    public override void Action(Node node)
+    public override Node? Action(Node node)
     {
         // ここにアルゴリズムを記載する。
     }

@@ -12,7 +12,7 @@ namespace GraphVisualizer
     {
         public static async Task<string> ParameterToCode(string base64)
         {
-            var b = Convert.FromBase64String(base64);
+            var b = Convert.FromBase64String(base64.Replace("-", "+").Replace("_", "/").Replace("!","="));
             using (MemoryStream memoryStream = new MemoryStream(b))
             {
                 memoryStream.Position = 0;
@@ -44,13 +44,13 @@ namespace GraphVisualizer
                     inputstream.Position = 0;
                     using (MemoryStream outputStream = new MemoryStream())
                     {
-                        using (var compressionStream = new CompressionStream(outputStream, 6))
+                        using (var compressionStream = new CompressionStream(outputStream, 8))
                         {
                             await inputstream.CopyToAsync(compressionStream);
                             await compressionStream.FlushAsync();
                             outputStream.Position = 0;
                             var array = outputStream.ToArray();
-                            return Convert.ToBase64String(array);
+                            return Convert.ToBase64String(array).Replace("+", "-").Replace("/", "_").Replace("=", "!");
                         }
 
                     }
