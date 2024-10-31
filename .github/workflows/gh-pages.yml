@@ -7,10 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: GraphVisualizer
+    runs-on: ubuntu-22.04
     steps:
       # Checkout the code
       - uses: actions/checkout@v2
@@ -22,7 +19,9 @@ jobs:
           dotnet-version: 8.0.403
       # Publish the site
       - name: Publish
-        run: dotnet publish GraphVisualizer.csproj -p:GHPages=true -c:Release -o:publish
+        run: |
+              cd GraphVisualizer
+              dotnet publish GraphVisualizer.csproj -p:GHPages=true -c:Release -o:publish
 
       # Deploy the site
       - name: Deploy
