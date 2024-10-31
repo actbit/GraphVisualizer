@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: GraphVisualizer
     steps:
       # Checkout the code
       - uses: actions/checkout@v2
