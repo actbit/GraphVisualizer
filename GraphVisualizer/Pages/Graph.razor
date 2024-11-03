@@ -647,7 +647,7 @@
     public string? base64code { get; set; }
     [SupplyParameterFromQuery]
     [Parameter]
-    public string? node { get; set; }
+    public string? base64graph { get; set; }
     string url = "";
     string output = "";
     string sourceCode = "";
@@ -666,7 +666,7 @@
         string source = await CodeChange.CodeToParameter(sourceCode);
         string sss = await CodeChange.ParameterToCode(source);
 
-        url = baseurl + $"?base64code={source}&node={json}";
+        url = baseurl + $"?base64code={source}&base64graph={json}";
 
     }
     bool ControllerMenuVisible
@@ -983,10 +983,10 @@
                 sourceCode = Compiler.BaseCode;
             }
             bool direct = false;
-            if(node !=null){
+            if(base64graph !=null){
 
-                node = await CodeChange.ParameterToCode(node);
-                var data = JsonSerializer.Deserialize<JsonNodeEdge>(node,options);
+                base64graph = await CodeChange.ParameterToCode(base64graph);
+                var data = JsonSerializer.Deserialize<JsonNodeEdge>(base64graph,options);
                 direct = data.ToDirect;
 
                 data.Nodes.ForEach(x => Node.Create(x.id, x.color, x.title));
