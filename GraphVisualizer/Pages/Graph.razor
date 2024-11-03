@@ -666,7 +666,7 @@
         string source = await CodeChange.CodeToParameter(sourceCode);
         string sss = await CodeChange.ParameterToCode(source);
 
-        url = baseurl + $"?base64code={source}";
+        url = baseurl + $"?base64code={source}&node={json}";
 
     }
     bool ControllerMenuVisible
@@ -998,7 +998,7 @@
 
                     if(node1 != null)
                     {
-                        node1.CreateToEdge(node2, int.Parse(x.weight));
+                        node1.CreateToEdge(node2, int.TryParse(x.weight, out int w) ? w : -1);//重みの設定がない場合(InternalEdge以外では-1として処理される？)、InternalEdgeのweightは空の文字列となるため、int.TryParseで判定する
                     }
                 });
             }
