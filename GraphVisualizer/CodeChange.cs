@@ -37,7 +37,8 @@ namespace GraphVisualizer
         {
             using (MemoryStream inputstream = new MemoryStream())
             { 
-                using(StreamWriter streamWriter = new StreamWriter(inputstream, System.Text.Encoding.UTF8))
+                var utf8WithoutBOM = new UTF8Encoding(false);//BOMを使用しないUTF8エンコーディングを使用
+                using (StreamWriter streamWriter = new StreamWriter(inputstream, utf8WithoutBOM))
                 {
                     await streamWriter.WriteAsync(code);
                     await streamWriter.FlushAsync();

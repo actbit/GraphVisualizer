@@ -644,10 +644,10 @@
 @code {
     [SupplyParameterFromQuery]
     [Parameter]
-    public string? base64code { get; set; }
+    public string? code { get; set; }
     [SupplyParameterFromQuery]
     [Parameter]
-    public string? node { get; set; }
+    public string? graph { get; set; }
     string url = "";
     string output = "";
     string sourceCode = "";
@@ -666,7 +666,7 @@
         string source = await CodeChange.CodeToParameter(sourceCode);
         string sss = await CodeChange.ParameterToCode(source);
 
-        url = baseurl + $"?base64code={source}";
+        url = baseurl + $"?code={source}&graph={json}";
 
     }
     bool ControllerMenuVisible
@@ -966,11 +966,11 @@
 
             Compiler = new Compiler(ScriptService);
             IsInitialized = false;
-            if(base64code != null)
+            if(code != null)
             {
                 string code = "";
                 try{
-                    code = await CodeChange.ParameterToCode(base64code);
+                    code = await CodeChange.ParameterToCode(this.code);
 
                 }
                 catch(Exception e)
@@ -983,10 +983,10 @@
                 sourceCode = Compiler.BaseCode;
             }
             bool direct = false;
-            if(node !=null){
+            if(graph !=null){
 
-                node = await CodeChange.ParameterToCode(node);
-                var data = JsonSerializer.Deserialize<JsonNodeEdge>(node,options);
+                graph = await CodeChange.ParameterToCode(graph);
+                var data = JsonSerializer.Deserialize<JsonNodeEdge>(graph,options);
                 direct = data.ToDirect;
 
                 data.Nodes.ForEach(x => Node.Create(x.id, x.color, x.title));
@@ -998,7 +998,7 @@
 
                     if(node1 != null)
                     {
-                        node1.CreateToEdge(node2, int.Parse(x.weight));
+                        node1.CreateToEdge(node2, int.TryParse(x.weight, out int w) ? w : -1);//重みの設定がない場合(InternalEdge以外では-1として処理される？)、InternalEdgeのweightは空の文字列となるため、int.TryParseで判定する
                     }
                 });
             }
