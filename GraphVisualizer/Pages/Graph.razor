@@ -647,6 +647,9 @@
     public string? code { get; set; }
     [SupplyParameterFromQuery]
     [Parameter]
+    public string? base64code { get; set; }
+    [SupplyParameterFromQuery]
+    [Parameter]
     public string? graph { get; set; }
     string url = "";
     string output = "";
@@ -956,7 +959,7 @@
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             WriteIndented = true,
             PropertyNameCaseInsensitive = true,
-            
+
         };
     Compiler Compiler;
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -966,6 +969,10 @@
 
             Compiler = new Compiler(ScriptService);
             IsInitialized = false;
+            if(code == null)
+            {
+                code = base64code;
+            }
             if(code != null)
             {
                 string code = "";
