@@ -749,7 +749,7 @@
     }
     void clear()
     {
-        Nodes.ForEach(x => { x.Color = "#666"; x.IsVisited = false; });
+        Nodes.ForEach(x => { x.Color = "#666"; x.IsVisited = false;x.State = 0; });
         Nodes.ForEach(x => x.ToEdges.ToList().ForEach(x => x.Color = "#ccc"));
     }
     async void RunProgram()
@@ -957,7 +957,7 @@
     JsonSerializerOptions options = new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            WriteIndented = true,
+            WriteIndented = false,
             PropertyNameCaseInsensitive = true,
 
         };
