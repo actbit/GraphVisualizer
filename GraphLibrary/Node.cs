@@ -28,6 +28,7 @@ namespace GraphLibrary
             var node = nodes.Where(x => x.ID == id).FirstOrDefault();
             return node != null;
         }
+        public int State{ get; set;}
         public string ID {  get; private set; }
         public string _title;
         public string Title { get { return _title; } set { _title =value;TitleChange?.Invoke(this); } }
