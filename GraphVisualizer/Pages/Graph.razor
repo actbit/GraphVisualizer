@@ -11,7 +11,7 @@
 @inject IJSRuntime JSRuntime
 <div class="control-header">
     <h1 style="font-size:28px">GraphVisualizer</h1>
-    
+
     @if(NowAction == null)
     {
         <button class="btn btn-success" @onclick="RunProgram">実行</button>
@@ -26,7 +26,7 @@
     {
         <button class="btn btn-success" disabled="@wait_button_str" @onclick="nextStep">次へ</button>
     }
-    
+
 </div>
 
 <div class="menu-header">
@@ -69,7 +69,7 @@
                         else
                         {
                             <button type="button" @onclick="()=>SelectNode(node)" class="list-group-item list-group-item-action">@(node.ID + ":" + node.Title)</button>
-                            
+
                         }
                     }
 
@@ -454,191 +454,191 @@
 
 <style>
     .base{
-        display:flex;
-        justify-items:stretch;
-        justify-content: space-between;
-        height:calc(100vh - 50px - 40px);
+    display:flex;
+    justify-items:stretch;
+    justify-content: space-between;
+    height:calc(100vh - 50px - 40px);
     }
 
 
-    
+
     .control-header{
-        height:50px;
-        background-color:darkgray;
-        display:flex;
-        justify-content:flex-start;
-        align-items:center;
-        gap:20px;
-        flex-wrap:wrap;
-        text-align:center;
-        padding:5px 20px;
-        box-sizing:border-box;
+    height:50px;
+    background-color:darkgray;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+    text-align:center;
+    padding:5px 20px;
+    box-sizing:border-box;
     }
 
     .menu-header {
 
-        display: none;
+    display: none;
     }
     @@media screen and  (max-width:680px) {
-        .base{
-            height:calc(100vh - 80px - 60px - 40px);
+    .base{
+    height:calc(100vh - 80px - 60px - 40px);
 
-        }
-        .control-header{
-            height:80px;
+    }
+    .control-header{
+    height:80px;
 
-        }
+    }
 
-        .menu-header {
-            box-sizing: border-box;
-            padding: 10px;
-            height: 60px;
-            width: 100%;
-            display: flex;
-            gap:20px;
-            background-color:#AAAAAA;
-        }
+    .menu-header {
+    box-sizing: border-box;
+    padding: 10px;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    gap:20px;
+    background-color:#AAAAAA;
+    }
     }
     .interval-number{
-        width:200px
-        
+    width:200px
+
     }
     .controller{
-        background-color:lightgray;
-        padding:10px;
-        overflow: auto;
-        overflow-y: scroll;
-        width: 400px;
-        min-width:300px;
+    background-color:lightgray;
+    padding:10px;
+    overflow: auto;
+    overflow-y: scroll;
+    width: 400px;
+    min-width:300px;
     }
 
     .center-item {
-        flex-grow: 1;
-        min-width:300px;
+    flex-grow: 1;
+    min-width:300px;
     }
     #cy{
-        height: calc(100% - 100px);
-        width:100%;
+    height: calc(100% - 100px);
+    width:100%;
     }
     .output{
-        height:100px;
+    height:100px;
     }
     .output-area{
-        height:100%;
+    height:100%;
     }
 
     @@media screen and (max-width:820px) {
-        .center-item {
-            min-width: 200px;
-        }
+    .center-item {
+    min-width: 200px;
+    }
     }
 
     @@media screen and (max-width:500px) {
-        .center-item {
-            min-width: 30px;
-        }
+    .center-item {
+    min-width: 30px;
+    }
     }
 
 
     .edge{
-        height:400px;
+    height:400px;
     }
     .nodes{
-        max-height:200px;
-        
-        overflow: auto;
-        overflow-y: scroll;
+    max-height:200px;
+
+    overflow: auto;
+    overflow-y: scroll;
     }
 
     .edges {
-        max-height: 200px;
-        overflow: auto;
-        overflow-y: scroll;
+    max-height: 200px;
+    overflow: auto;
+    overflow-y: scroll;
     }
 
     .remove {
-        background-color: #f3f3f3;
-        margin: 5px;
-        border-radius: 5px;
-        padding: 10px;
+    background-color: #f3f3f3;
+    margin: 5px;
+    border-radius: 5px;
+    padding: 10px;
     }
     .edit {
-        background-color: #f3f3f3;
-        margin:5px;
-        border-radius: 5px;
-        padding: 10px;
+    background-color: #f3f3f3;
+    margin:5px;
+    border-radius: 5px;
+    padding: 10px;
     }
     .border-radius5{
-        border-radius: 5px;
-        border: 1px solid gray;
-        padding: 10px;
-        margin-bottom: 30px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 30px;
     }
     .create{
-        background-color: #f3f3f3;
-        padding:10px;
-        margin: 5px;
-        border-radius: 5px;
+    background-color: #f3f3f3;
+    padding:10px;
+    margin: 5px;
+    border-radius: 5px;
     }
 
     .button-right{
-        display: block;
-        margin-left: auto;
-        margin-right:0;
+    display: block;
+    margin-left: auto;
+    margin-right:0;
     }
     .code-control{
-        background-color:white;
+    background-color:white;
     }
     .code-base{
-        width:400px;
-        min-width: 200px;
+    width:400px;
+    min-width: 200px;
 
     }
     .code-area
     {
-        width:100%;
-        height: calc(100% - 120px - 40px);
+    width:100%;
+    height: calc(100% - 120px - 40px);
     }
-    
-    @@media screen and (max-width:680px) {
-        .code-base {
-            display:none;
-        }
 
-        .controller {
-            display:none;
-        }
+    @@media screen and (max-width:680px) {
+    .code-base {
+    display:none;
+    }
+
+    .controller {
+    display:none;
+    }
     }
     .url-block{
-        height:40px;
+    height:40px;
     }
     .controller-tab {
-        position:sticky;
-        width:100vw;
-        top:0;
-        left:0;
+    position:sticky;
+    width:100vw;
+    top:0;
+    left:0;
     }
     .over-control {
-        display:none;
+    display:none;
     }
     @@media screen and  (max-width:680px){
-        .over-control {
-            display:block;
-            position: absolute;
-            
-            width: 100vw;
-            top: 0;
-            left: 0;
-            height: 80vh;
-            background-color: white;
-            z-index: 999;
-        }
+    .over-control {
+    display:block;
+    position: absolute;
+
+    width: 100vw;
+    top: 0;
+    left: 0;
+    height: 80vh;
+    background-color: white;
+    z-index: 999;
+    }
     }
 
-    
+
 
     .control-views{
-        position:relative;
+    position:relative;
     }
 </style>
 @code {
@@ -1051,6 +1051,7 @@
             Node.TitleChange = NodeTitleChange;
             Node.DirectedChange = DirectedChange;
             InternalClass.PrintAfter = Print;
+            isDirected = direct;
             StateHasChanged();
         }
 
