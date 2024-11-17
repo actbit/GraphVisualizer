@@ -114,3 +114,38 @@ GraphVisualizerはURLにプログラムやノード設定を保存します。
 URLの生成ボタンを押すことで右側のテキストボックスにURLが生成されるので、そのURLをコピーし、共有してください。
 
 コピーしたURLにアクセスすることでデータが復元されます。
+
+
+## プログラムの書き方
+
+プログラムの記述方法を説明します。
+
+### プログラムの基本的な考え
+
+GraphVisualizerはC#でプログラムを記述することでアルゴリズムを表示することができるようになっています。
+
+以下のコードは初期状態のプログラムです。
+
+```cs
+using System;
+using GraphLibrary;
+
+public class ActionAlgorithm:GraphAction
+{
+    public override Node? Action(Node node)
+    {
+        // ここにアルゴリズムを記載する。
+    }
+}
+```
+#### 関数について
+`public class ActionAlgorithm:GraphAction`の部分は`GraphAction`という型を派生した`ActionAlgorithm`という型(クラス)を宣言しています。
+
+```
+public override Node? Action(Node node)
+{
+    // ここにアルゴリズムを記載する。
+}
+```
+の部分で戻り値がNode型、引数がNode型のActionという関数を宣言しています。
+このActionという関数は引数のNodeで
