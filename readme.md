@@ -148,4 +148,79 @@ public override Node? Action(Node node)
 }
 ```
 の部分で戻り値がNode型、引数がNode型のActionという関数を宣言しています。
-このActionという関数は引数のNodeで
+このActionという関数は引数にターゲットとなる(注目している)Nodeが与えられます。
+戻り値に指定したNodeで次のターゲットとなるNodeを指定することができます。
+つまり、戻り値として返したNodeが次のActionの呼び出し時に引数として渡されるようになります。
+戻り値をnullとした場合に探索を終了します。
+
+
+実際の使い方としては探索などの際に次に探索するNodeの決定やデータNodeデータの保存などを行えるようになっています。
+
+以下に深さ優先探索のプログラムの例を示します。
+```cs
+using System;
+using GraphLibrary;
+using System.Collections.Generic;
+public class ActionAlgorithm:GraphAction
+{
+    // Nodeのスタックを作成
+    Stack<Node> NodeStack = new Stack<Node>();
+    public override Node? Action(Node node)
+    {
+        node.IsVisited = true; // 探索済みにする
+        // nodeの色を変える
+        node.Color = "red";
+        if(node.ID == "end") // endを探す
+        {
+            Print("endを発見しました");
+            return null;
+        }
+        // 次のnodeを入れる変数
+        Node? nextNode = null;
+        // nodeから移動できるedge一覧を取得
+        var edges = node.ToEdges;
+        // edge一覧をループで確認
+        for(int i = 0;i< edges.Count;i++)
+        {
+            // edgeにつながるnodeが訪問済みか確認
+            if(edges[i].ToNode.IsVisited == false)
+            {
+                //訪問済みではない場合
+
+                // 次のnodeに設定
+                nextNode = edges[i].ToNode;
+                // edgeの色を変える
+                edges[i].Color = "blue";
+                // ループを抜ける
+                break;
+            }
+        }
+
+        // 次のnodeがあるか確認
+        if(nextNode  == null)
+        {
+            // スタックの中身が0個か確認
+            if(NodeStack.Count == 0)
+            {
+                // 見つからなかったので探索を終了する。
+                Print("接続されていません");
+                // nullを返すと探索終了
+                return null;
+            }
+            // Stackからpopして次のnodeに設定
+            nextNode = NodeStack.Pop();
+        }
+        else
+        {
+            // 現在のnodeをスタックにpush
+            NodeStack.Push(node);
+        }
+
+        // nextNodeを返してメソッド終了
+        return nextNode ;
+    }
+}
+```
+
+このプログラムは以下のリンクより実行可能です
+[深さ優先探索のサンプルプログラム](https://actbit.github.io/GraphVisualizer/?code=KLUv_QBY9BoAtmiOQxCrOgdIciIAAABg~48sZtV5FRum4cwHfcPVVVF8_tr11g5wULG7smkzRrevuVch05TjEFaG5VUDok7x0RcRAAACBwF9AHgAfwCiDe2BsMCmuzXVu2BX73IyAqpnMa4bl9NkFFSwuw5QvcuRyPh0xAuREkry4cXMr5KfJN8lP4f8Mf_qXU5vW3e3xkADoCESLb6hb2Kiw7DzffpjP8840riPxRWsFZsQvFb81O~7FBuN48Ad7LEGRKMOrtA4jSqGHBcdAm04Bp24oIIYUKiJdZb5T_lPGpxmjvmbXEBJ3zeCDeJRrJjTYEpa_FP~ZSuVqWaYjAhabNHdrfJfgaBmfg~svW2twXhgxXTX9YAMyHIYr2JMd43vdylK_ibWaebPYEpj_ttW5lf5w_xd_Ess6GpltgJBe9uaqyMWu2uvBqiZMXX8PNxI7Ex5pTDXSiLnSoXTQ8Xfpanh1wF1x7kYmwQWQRmCOlFe6anMf_JH8WdpICAsJ4LjpdhIWC6iu7YtgjaDL~gDJZWtZi7_FPkeyIeRH9aQR~BidB3WkFcbdzZSLeeEkNPM72qlHSwvNeTVMv~Hv8sfVZ4dXDNT_jIkjdTdrXEm8knyP~Q3Ib_ln9o2UTiKwnEEe5GcLSGzGn5Vkxldi9bojl7~Kn8JLqmZ__vGCPkpePi3_E_5Uf4jG2YnIGjueAeyl6xhZuZ3~cf8S_wt~Jesjuiu67LjjDj5w2RpCstLzLvOgGyZP_ufNFJGp2IPBH~SBwF2qIGVUQiZIRESmU2l2CACQgxjdT0RlCyEIDJKEclIU1CQbIwB4Q9O~gJ61~HdCgZb5bJOpjBtgAXWGh~cGdjGoAGWIVBYh2o4pSqMZJM1aIDRjEP5MMTm~ZQ91txaW9lg2wNyMZA4jaAC6XqInA97yXVtrGZPP2ODSYnWrySR4An0eFaVfnyqc0d_YRMoSMXaUCKq~9ouzPKMwzv9c9k1J4ZxWURSgW0RpIr38mY1escSWz64DkzQHr8pBVbhmUy2NkrAnenuPIupgVXx1imfw0dsRid8hjLe_Qi~Ua6bqFAaJj6ht1ZeIwdGYixxowWHXccQEL__H3VlV67uO709rqNHePAO5gDdyiogJ5XVl05fEII~j9gGqC4Ml1~CE3A5Aw--&graph=KLUv_QBY5A0A1p1PHWBL2gEanH95VKdLYfpMwSAZMEmR9L7QeFpbLALjUwBFAEEAiYVyiL~xs7RparZlGA0NFiufdlWvwRI4CDEQBYQYS8FVMxHPuVNVAGMQD8dyhSKRkGhPWCAsEMdCoRYLBwk4FsJBDAdCCDEISMCx4CsxcBBiOAT45gzRrakfWu5By6P6X~U5o6fR~PdtmyJKprxoRyk2ZLXQ8nN6Pv_xF2GaOV1rVmiq5Jt5PXfv7j4wQPCGhRso1KIVDAHrijuLMm2SvWMy9EM7CNdMct5NlGj8S7ZSbtIYMq51YTRUdvN_RpgKVcmlS6__uO0r2x~jpTVo7rx9thxlTN5fAg9GASEGcrotd5Dx1s4nZVgWWnpKQ1eMp7vRxeuFS67htsaTzPXQCsozfuRXPJXJROv_VbGT0trSguaN2BhXj1XRNqCRfDJjEieBxEh6EEMKqrYBNagEeA_omEZQaRLNAtQVBiVBTy2gBJ2GoCcMFDIEcVCakS46TCOgMOiInopCOTBRPgxaRhtPIJtIB39G3_9j9cvsPUo3f6xmAp4l4CQJZ0k4S8IZSVrGUJZwlizSqEAyD2g9kZhMV4kC)

@@ -18,7 +18,7 @@ namespace GraphVisualizer
     }
     public class JsonNodeEdge
     {
-        public bool ToDirect = false;
+        public bool ToDirect { get; set; } = false;
         public List<InternalNode> Nodes { get; set; }
         public List<InternalEdge> Edges { get; set; }
 
