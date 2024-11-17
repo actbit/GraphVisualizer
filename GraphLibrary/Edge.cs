@@ -7,7 +7,7 @@ namespace GraphLibrary
 {
     public class Edge
     {
-        public string ID;
+        public string ID { get; private set; }
         internal Node Source {  get; set; }
         internal Node Target { get; set; }
         internal int? Weight { get; set; }

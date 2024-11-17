@@ -168,45 +168,45 @@ namespace GraphLibrary
         bool IsTarget = false;
         internal ToEdge(Edge edge, bool isTarget = true)
         {
-            Edge = edge;
+            _Edge = edge;
             IsTarget = isTarget;
         }
-        internal Edge Edge;
+        internal Edge _Edge;
         public void Delete()
         {
-            DeleteChange?.Invoke(Edge);
+            DeleteChange?.Invoke(_Edge);
 
-            Node.edges.Remove(Edge);
+            Node.edges.Remove(_Edge);
         }
         public string? ID
         {
             get
             {
-                return Edge.ID;
+                return _Edge.ID;
             }
         }
         public string? Color
         {
             get
             {
-                return Edge.Color;
+                return _Edge.Color;
             }
             set
             {
-                Edge.Color = value;
-                ColorChange?.Invoke(Edge);
+                _Edge.Color = value;
+                ColorChange?.Invoke(_Edge);
             }
         }
         public int? Weight
         {
             get
             {
-                return Edge.Weight;
+                return _Edge.Weight;
             }
             set
             {
-                Edge.Weight = value;
-                WeightChange?.Invoke(Edge);
+                _Edge.Weight = value;
+                WeightChange?.Invoke(_Edge);
             }
         }
         public Node ToNode { 
@@ -214,27 +214,27 @@ namespace GraphLibrary
             {
                 if (IsTarget)
                 {
-                    return Edge.Target;
+                    return _Edge.Target;
                 }
-                return Edge.Source;
+                return _Edge.Source;
             }
             set
             {
                 if (IsTarget)
                 {
-                    Edge.Target = value;
+                    _Edge.Target = value;
                 }
                 else
                 {
-                    Edge.Source = value;
+                    _Edge.Source = value;
                 }
-                ToNodeChange?.Invoke(Edge);
+                ToNodeChange?.Invoke(_Edge);
             }
         }
 
         public InternalEdge ToInternalEdge()
         {
-            return Edge.ToInternalEdge();
+            return _Edge.ToInternalEdge();
 
         }
         
