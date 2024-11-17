@@ -223,4 +223,122 @@ public class ActionAlgorithm:GraphAction
 ```
 
 このプログラムは以下のリンクより実行可能です
-[深さ優先探索のサンプルプログラム](https://actbit.github.io/GraphVisualizer/?code=KLUv_QBY9BoAtmiOQxCrOgdIciIAAABg~48sZtV5FRum4cwHfcPVVVF8_tr11g5wULG7smkzRrevuVch05TjEFaG5VUDok7x0RcRAAACBwF9AHgAfwCiDe2BsMCmuzXVu2BX73IyAqpnMa4bl9NkFFSwuw5QvcuRyPh0xAuREkry4cXMr5KfJN8lP4f8Mf_qXU5vW3e3xkADoCESLb6hb2Kiw7DzffpjP8840riPxRWsFZsQvFb81O~7FBuN48Ad7LEGRKMOrtA4jSqGHBcdAm04Bp24oIIYUKiJdZb5T_lPGpxmjvmbXEBJ3zeCDeJRrJjTYEpa_FP~ZSuVqWaYjAhabNHdrfJfgaBmfg~svW2twXhgxXTX9YAMyHIYr2JMd43vdylK_ibWaebPYEpj_ttW5lf5w_xd_Ess6GpltgJBe9uaqyMWu2uvBqiZMXX8PNxI7Ex5pTDXSiLnSoXTQ8Xfpanh1wF1x7kYmwQWQRmCOlFe6anMf_JH8WdpICAsJ4LjpdhIWC6iu7YtgjaDL~gDJZWtZi7_FPkeyIeRH9aQR~BidB3WkFcbdzZSLeeEkNPM72qlHSwvNeTVMv~Hv8sfVZ4dXDNT_jIkjdTdrXEm8knyP~Q3Ib_ln9o2UTiKwnEEe5GcLSGzGn5Vkxldi9bojl7~Kn8JLqmZ__vGCPkpePi3_E_5Uf4jG2YnIGjueAeyl6xhZuZ3~cf8S_wt~Jesjuiu67LjjDj5w2RpCstLzLvOgGyZP_ufNFJGp2IPBH~SBwF2qIGVUQiZIRESmU2l2CACQgxjdT0RlCyEIDJKEclIU1CQbIwB4Q9O~gJ61~HdCgZb5bJOpjBtgAXWGh~cGdjGoAGWIVBYh2o4pSqMZJM1aIDRjEP5MMTm~ZQ91txaW9lg2wNyMZA4jaAC6XqInA97yXVtrGZPP2ODSYnWrySR4An0eFaVfnyqc0d_YRMoSMXaUCKq~9ouzPKMwzv9c9k1J4ZxWURSgW0RpIr38mY1escSWz64DkzQHr8pBVbhmUy2NkrAnenuPIupgVXx1imfw0dsRid8hjLe_Qi~Ua6bqFAaJj6ht1ZeIwdGYixxowWHXccQEL__H3VlV67uO709rqNHePAO5gDdyiogJ5XVl05fEII~j9gGqC4Ml1~CE3A5Aw--&graph=KLUv_QBY5A0A1p1PHWBL2gEanH95VKdLYfpMwSAZMEmR9L7QeFpbLALjUwBFAEEAiYVyiL~xs7RparZlGA0NFiufdlWvwRI4CDEQBYQYS8FVMxHPuVNVAGMQD8dyhSKRkGhPWCAsEMdCoRYLBwk4FsJBDAdCCDEISMCx4CsxcBBiOAT45gzRrakfWu5By6P6X~U5o6fR~PdtmyJKprxoRyk2ZLXQ8nN6Pv_xF2GaOV1rVmiq5Jt5PXfv7j4wQPCGhRso1KIVDAHrijuLMm2SvWMy9EM7CNdMct5NlGj8S7ZSbtIYMq51YTRUdvN_RpgKVcmlS6__uO0r2x~jpTVo7rx9thxlTN5fAg9GASEGcrotd5Dx1s4nZVgWWnpKQ1eMp7vRxeuFS67htsaTzPXQCsozfuRXPJXJROv_VbGT0trSguaN2BhXj1XRNqCRfDJjEieBxEh6EEMKqrYBNagEeA_omEZQaRLNAtQVBiVBTy2gBJ2GoCcMFDIEcVCakS46TCOgMOiInopCOTBRPgxaRhtPIJtIB39G3_9j9cvsPUo3f6xmAp4l4CQJZ0k4S8IZSVrGUJZwlizSqEAyD2g9kZhMV4kC)
+[深さ優先探索のサンプルプログラム](https://actbit.github.io/GraphVisualizer/?code=KLUv_QBY9BoAtmiOQxCrOgdIciIAAABg~48sZtV5FRum4cwHfcPVVVF8_tr11g5wULG7smkzRrevuVch05TjEFaG5VUDok7x0RcRAAACBwF9AHgAfwCiDe2BsMCmuzXVu2BX73IyAqpnMa4bl9NkFFSwuw5QvcuRyPh0xAuREkry4cXMr5KfJN8lP4f8Mf_qXU5vW3e3xkADoCESLb6hb2Kiw7DzffpjP8840riPxRWsFZsQvFb81O~7FBuN48Ad7LEGRKMOrtA4jSqGHBcdAm04Bp24oIIYUKiJdZb5T_lPGpxmjvmbXEBJ3zeCDeJRrJjTYEpa_FP~ZSuVqWaYjAhabNHdrfJfgaBmfg~svW2twXhgxXTX9YAMyHIYr2JMd43vdylK_ibWaebPYEpj_ttW5lf5w_xd_Ess6GpltgJBe9uaqyMWu2uvBqiZMXX8PNxI7Ex5pTDXSiLnSoXTQ8Xfpanh1wF1x7kYmwQWQRmCOlFe6anMf_JH8WdpICAsJ4LjpdhIWC6iu7YtgjaDL~gDJZWtZi7_FPkeyIeRH9aQR~BidB3WkFcbdzZSLeeEkNPM72qlHSwvNeTVMv~Hv8sfVZ4dXDNT_jIkjdTdrXEm8knyP~Q3Ib_ln9o2UTiKwnEEe5GcLSGzGn5Vkxldi9bojl7~Kn8JLqmZ__vGCPkpePi3_E_5Uf4jG2YnIGjueAeyl6xhZuZ3~cf8S_wt~Jesjuiu67LjjDj5w2RpCstLzLvOgGyZP_ufNFJGp2IPBH~SBwF2qIGVUQiZIRESmU2l2CACQgxjdT0RlCyEIDJKEclIU1CQbIwB4Q9O~gJ61~HdCgZb5bJOpjBtgAXWGh~cGdjGoAGWIVBYh2o4pSqMZJM1aIDRjEP5MMTm~ZQ91txaW9lg2wNyMZA4jaAC6XqInA97yXVtrGZPP2ODSYnWrySR4An0eFaVfnyqc0d_YRMoSMXaUCKq~9ouzPKMwzv9c9k1J4ZxWURSgW0RpIr38mY1escSWz64DkzQHr8pBVbhmUy2NkrAnenuPIupgVXx1imfw0dsRid8hjLe_Qi~Ua6bqFAaJj6ht1ZeIwdGYixxowWHXccQEL__H3VlV67uO709rqNHePAO5gDdyiogJ5XVl05fEII~j9gGqC4Ml1~CE3A5Aw--&graph=KLUv_QBYHA0A5l1PHmBp2gFqOOy_9sJBUqTfYWhgyQTZDlfar9ENBMFZAVEARgBBAGT7dC2T6bl2qdr6eBrnKvP7_91PvAA5GHyCUj0nE9GYu0MDUVUAgiCMBcLCFcKhOMiBHIw~GgRBXkEYChCkoX4xQA6qgdALQQ5XDEXAgoAwBNeWemknoWPu6wueQaPHv4q3rNLUYzJvTbs7Z~j8eTVt~L_X8ctebuuUNkyalvjdPBWpW~5OEOQ4SCjUwqESjD6cobBokEPdfegtvbBtyrR0yxiX5Jg4TypmV5q~yZcx3po5mbYL1ZYf8tIq389q6hd0Q~fJ0npa~yfT83vQLyJefYUfraOlDg0Ge05p0yZxoR30tuROWy5q3YyKadXoq2Pmnq9hOcmwL~3z3z7VIKTul4sj5lO~lrgka9Y0XF0zS3XyJr3FlB0tqJF8AYkomriJdQcAw6laBxFIECPktMAIP26iyUzoHOgA2mfwcdlHKtrepdnMMDknI3PMyGlPHV6tRsgDmIEOIaaOpHYwHUmguDOtU0lLbr6JCEvAmTD1YgLpaVcQj_ozwCo-)
+
+
+### GraphActionクラス
+
+GraphActionクラスはグラフに何かの動作をさせるクラスを作成するのに使用される基底クラスです。
+GraphActionから派生したクラスでグラフの動作を実装します。
+
+#### 定義
+```cs
+public abstract class GraphAction:Object
+```
+
+#### 変数
+
+このクラスには変数は含まれません。
+
+#### 関数
+
+|関数名|用途|
+|------|----|
+|Node? Action(Node)|前述したようにoverrideして実行したいアルゴリズムを記述するためのメソッドです|
+|void Print(string)|文字列を引数に与えることで値を表示することができます。|
+
+### Nodeクラス
+
+NodeクラスはNodeの情報を管理するためのクラスです。
+
+#### 定義
+
+```cs
+public class Node:object
+```
+
+#### static変数(プロパティ)
+
+|変数名|型|用途|
+|-----|---|---|
+|Nodes|IReadOnlyList<Node>|node一覧を変更不可能なリストで保存する変数(プロパティ)です|
+|Edges|IReadOnlyList<Edge>|edge一覧を変更不可能なリストで保存する変数(プロパティ)です|
+
+#### 変数(プロパティ)
+
+|変数名|型|用途|
+|-----|---|---|
+|ToEdges|IReadOnlyList<ToEdge>|現在のNodeから到達可能なEdge一覧を変更不可能なリストで保存できる変数(プロパティです)|
+|IsVisited|bool|到達可能かを保存できる変数です。実行開始時にデフォルト(false)に戻されます(初期化処理不要)|
+|State|int|状態を保存するための変数です。実行開始時にデフォルト(0)に戻されます(初期化処理不要)|
+|ID|string|NodeのIDを取得できます。設定はできません|
+|Title|string|Nodeのタイトルを取得・編集できます|
+|Color|string|色を変更取得・編集できます|
+
+#### staticメソッド(関数)
+
+|関数名|用途|
+|------|---|
+|Node Create(string id, string title)|Nodeを新規作成します。|
+|Node Create(string id)|Nodeをタイトルの指定なしで新規作成します。|
+|bool ContainsID(string id)|引数のidを持つNodeがあるかを確認します。|
+#### メソッド(関数)
+
+|関数名|用途|
+|---|----|
+|void Delete()|現在のnodeを削除します。接続しているEdgeも削除されます。|
+|void CreateToEdge(Node node,int weight)|現在のNodeから引数のnodeへのedgeをweightを指定して作成します。|
+
+
+### ToEdgeクラス
+
+ToEdgeクラスはNodeから移動可能なEdgeを表すためのクラスです。
+
+#### 定義
+
+```cs
+public class ToEdge:object
+```
+
+#### 変数
+
+|変数名|型|用途|
+|-----|---|----|
+|ID|string|EdgeのIDを取得できます(変更不可)|
+|Weigth|int|重みを取得・編集できます(-1もしくはnullにすると無効化します)|
+|Color|string|色を取得・編集できます|
+|ToNode|string|ToEdgeの取得元のNodeからつながるNodeを取得・編集できます|
+
+#### メソッド
+
+|関数名|用途|
+|---|----|
+|void Delete()|現在のedgeを削除します。|
+
+<hr>
+
+
+## 使用ライブラリ
+
+- [cytoscape.js](https://github.com/cytoscape/cytoscape.js)
+    ```
+    Copyright (c) 2016-2024, The Cytoscape Consortium.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of
+    this software and associated documentation files (the “Software”), to deal in
+    the Software without restriction, including without limitation the rights to
+    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+    of the Software, and to permit persons to whom the Software is furnished to do
+    so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+    ```
