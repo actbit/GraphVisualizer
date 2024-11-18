@@ -17,11 +17,7 @@ namespace GraphLibrary
         public static Action<Edge>? CreateEdge =null;
         public static Action<bool>? DirectedChange = null;
 
-        internal static List<Edge> edges = new List<Edge>();
-        public static IReadOnlyList<Edge> Edges
-        {
-            get { return edges; }
-        }
+
 
         public static bool ContainsID(string id)
         {
@@ -69,11 +65,11 @@ namespace GraphLibrary
         {
             get
             {
-                var sourceThis =  edges.Where(x=>x.Source == this).Select(x=>new ToEdge(x,true));
+                var sourceThis =  Edge.edges.Where(x=>x.Source == this).Select(x=>new ToEdge(x,true));
                 var targetThis = Enumerable.Empty<ToEdge>();
                 if (!IsDirected)
                 {
-                    targetThis = edges.Where(x => x.Target == this).Select(x=>new ToEdge(x,false));
+                    targetThis = Edge.edges.Where(x => x.Target == this).Select(x=>new ToEdge(x,false));
 
                 }
                 return sourceThis.Concat(targetThis).ToList();
@@ -126,17 +122,17 @@ namespace GraphLibrary
         public void CreateToEdge(Node node,int weight)
         {
             var edge = new Edge(this, node, weight);
-            edges.Add(edge);
+            Edge.edges.Add(edge);
             CreateEdge?.Invoke(edge);
 
         }
 
         public void Delete()
         {
-            var deleteEdges = edges.Where(x => x.Source == this).Concat(edges.Where(x => x.Target == this)).ToList();
+            var deleteEdges = Edge.edges.Where(x => x.Source == this).Concat(Edge.edges.Where(x => x.Target == this)).ToList();
             foreach(var edge in deleteEdges)
             {
-                edges.Remove(edge);
+                Edge.edges.Remove(edge);
             }
             DeleteNode?.Invoke(this);
         }
@@ -183,7 +179,7 @@ namespace GraphLibrary
         {
             DeleteChange?.Invoke(_Edge);
 
-            Node.edges.Remove(_Edge);
+            Edge.edges.Remove(_Edge);
         }
         public string? ID
         {

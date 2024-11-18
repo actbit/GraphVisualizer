@@ -661,7 +661,7 @@
         var baseurl = navigation.Uri.Split('?').First();
         JsonNodeEdge jsonNodeEdge = new JsonNodeEdge();
         jsonNodeEdge.ToDirect = isDirected;
-        jsonNodeEdge.Edges = Node.Edges.Select(x => x.ToInternalEdge()).ToList();
+        jsonNodeEdge.Edges = Edge.Edges.Select(x => x.ToInternalEdge()).ToList();
         jsonNodeEdge.Nodes = Node.Nodes.Select(x => x.ToInternalNode()).ToList();
         var jsonString = JsonSerializer.Serialize(jsonNodeEdge,options);
         var d = JsonSerializer.Deserialize<JsonNodeEdge>(jsonString,options);
@@ -1038,7 +1038,7 @@
             Nodes = Node.Nodes.ToList();
 
             en.Nodes = Nodes.Select(x => new InNodeObject { data = x.ToInternalNode() }).ToList();
-            en.Edges = Node.Edges.Select(x => new InEdgeObject { data = x.ToInternalEdge() }).ToList();
+            en.Edges = Edge.Edges.Select(x => new InEdgeObject { data = x.ToInternalEdge() }).ToList();
             await JSRuntime.InvokeVoidAsync("drawGraph", "cy",en);
             Node.ColorChange = NodeColorChange;
             Node.CreateNode = CreateNode;

@@ -7,6 +7,11 @@ namespace GraphLibrary
 {
     public class Edge
     {
+        internal static List<Edge> edges = new List<Edge>();
+        public static IReadOnlyList<Edge> Edges
+        {
+            get { return edges; }
+        }
         public static Action<Edge>? ColorChange;
         public static Action<Edge>? WeightChange;
         public static Action<Edge>? SourceNodeChange;
@@ -101,7 +106,7 @@ namespace GraphLibrary
         }
         public void Delete()
         {
-            Node.edges.Remove(this);
+            Edge.edges.Remove(this);
             DeleteChange?.Invoke(this);
         }
     }
