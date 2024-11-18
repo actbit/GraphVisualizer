@@ -11,7 +11,7 @@ namespace GraphLibrary
 
         public static void Print(string message)
         {
-            InternalClass.Print(message);
+            InternalClass.Print("log:"+message);
         }
     }
 }
