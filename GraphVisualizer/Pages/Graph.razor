@@ -658,6 +658,7 @@
     string baseAddress = "";
     async Task CreateURL()
     {
+        clear();
         var baseurl = navigation.Uri.Split('?').First();
         JsonNodeEdge jsonNodeEdge = new JsonNodeEdge();
         jsonNodeEdge.ToDirect = isDirected;
