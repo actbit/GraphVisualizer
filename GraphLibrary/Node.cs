@@ -172,6 +172,13 @@ namespace GraphLibrary
             IsTarget = isTarget;
         }
         internal Edge _Edge;
+        public Edge Edge
+        {
+            get
+            {
+                return _Edge;
+            }
+        }
         public void Delete()
         {
             DeleteChange?.Invoke(_Edge);

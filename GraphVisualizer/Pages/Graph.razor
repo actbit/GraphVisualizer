@@ -1043,13 +1043,18 @@
             Node.ColorChange = NodeColorChange;
             Node.CreateNode = CreateNode;
             Node.DeleteNode = DeleteNode;
-            ToEdge.ColorChange = EdgeColorChange;
+            ToEdge.ColorChange = UpdateEdge;
             ToEdge.DeleteChange = EdgeDelete;
-            ToEdge.WeightChange = WeightChange;
-            ToEdge.ToNodeChange = ToNodeChange;
+            ToEdge.WeightChange = UpdateEdge;
+            ToEdge.ToNodeChange = UpdateEdge;
             Node.CreateEdge= CreateEdge;
             Node.TitleChange = NodeTitleChange;
             Node.DirectedChange = DirectedChange;
+            Edge.TargetNodeChange = UpdateEdge;
+            Edge.SourceNodeChange = UpdateEdge;
+            Edge.WeightChange = UpdateEdge;
+            Edge.ColorChange = UpdateEdge;
+            Edge.DeleteChange = EdgeDelete;
             InternalClass.PrintAfter = Print;
             isDirected = direct;
             StateHasChanged();
@@ -1121,15 +1126,7 @@
         await JSRuntime.InvokeVoidAsync("updateNode", node.ToInternalNode());
 
     }
-    async void EdgeColorChange(Edge edge)
-    {
-        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
-    }
-    async void WeightChange(Edge edge)
-    {
-        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
 
-    }
     async void EdgeDelete(Edge edge)
     {
         if(SelectedNode.ToEdges.Where(x=>x.ID == edge.ID).Count() > 0)
@@ -1142,12 +1139,7 @@
         }
         await JSRuntime.InvokeVoidAsync("removeAtId", edge.ID);
     }
-    async void EdgeWeightChange(Edge edge)
-    {
-        await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
-
-    }
-    async void ToNodeChange(Edge edge)
+    async void UpdateEdge(Edge edge)
     {
         await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
 

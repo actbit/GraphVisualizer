@@ -7,11 +7,68 @@ namespace GraphLibrary
 {
     public class Edge
     {
+        public static Action<Edge>? ColorChange;
+        public static Action<Edge>? WeightChange;
+        public static Action<Edge>? SourceNodeChange;
+        public static Action<Edge>? TargetNodeChange;
+
+        public static Action<Edge>? DeleteChange;
         public string ID { get; private set; }
-        public Node Source {  get; set; }
-        public Node Target { get; set; }
-        public int? Weight { get; set; }
-        public string? Color { get; set; } = "#ccc";
+        Node _Source;
+        public Node Source
+        {
+            get
+            {
+                return _Source;
+            }
+            set
+            {
+                _Source = value;
+                SourceNodeChange?.Invoke(this);
+            }
+        }
+        Node _Target;
+        public Node Target
+        {
+            get
+            {
+                return _Target;
+            }
+            set
+            {
+                _Target = value;
+                TargetNodeChange?.Invoke(this);
+            }
+        }
+        int? _Weight;
+        public int? Weight
+        {
+            get
+            {
+                return _Weight;
+            }
+            set
+            {
+                _Weight = value;
+                WeightChange?.Invoke(this);
+            }
+        }
+
+        public string _Color = "#ccc";
+        public string Color
+        {
+            get
+            {
+                return _Color;
+            }
+            set 
+            { 
+                _Color = value;
+                ColorChange?.Invoke(this);  
+            } 
+        }
+
+
         internal Edge(Node source,Node target)
         {
             ID = Guid.NewGuid().ToString();
@@ -41,9 +98,12 @@ namespace GraphLibrary
                 weight = wstr,
                 color = this.Color
             };
-
         }
-
+        public void Delete()
+        {
+            Node.edges.Remove(this);
+            DeleteChange?.Invoke(this);
+        }
     }
 
     public class InternalEdge
