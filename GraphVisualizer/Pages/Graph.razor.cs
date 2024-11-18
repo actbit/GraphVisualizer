@@ -412,7 +412,7 @@ namespace GraphVisualizer.Pages
                 en.Nodes = Nodes.Select(x => new InNodeObject { data = x.ToInternalNode() }).ToList();
                 en.Edges = Edge.Edges.Select(x => new InEdgeObject { data = x.ToInternalEdge() }).ToList();
                 await JSRuntime.InvokeVoidAsync("drawGraph", "cy", en);
-                Node.ColorChange = NodeColorChange;
+                Node.ColorChange = UpdateNode;
                 Node.CreateNode = CreateNode;
                 Node.DeleteNode = DeleteNode;
                 ToEdge.ColorChange = UpdateEdge;
@@ -420,7 +420,7 @@ namespace GraphVisualizer.Pages
                 ToEdge.WeightChange = UpdateEdge;
                 ToEdge.ToNodeChange = UpdateEdge;
                 Node.CreateEdge = CreateEdge;
-                Node.TitleChange = NodeTitleChange;
+                Node.TitleChange = UpdateNode;
                 Node.DirectedChange = DirectedChange;
                 Edge.TargetNodeChange = UpdateEdge;
                 Edge.SourceNodeChange = UpdateEdge;
@@ -464,39 +464,13 @@ namespace GraphVisualizer.Pages
         }
 
 
-        void WaitProgram()
-        {
-            if (isInterval)
-            {
 
-                Task.Delay((int)(1000 * RunInterval));
-                StateHasChanged();
-
-            }
-            else
-            {
-                wait_button = true;
-                wait = true;
-                while (wait)
-                {
-                    Task.Delay(100);
-
-
-                }
-            }
-
-        }
-
-        async Task click()
-        {
-
-        }
         async void DirectedChange(bool directed)
         {
             await JSRuntime.InvokeVoidAsync("isDirected", directed);
 
         }
-        async void NodeTitleChange(Node node)
+        async void UpdateNode(Node node)
         {
             await JSRuntime.InvokeVoidAsync("updateNode", node.ToInternalNode());
 
@@ -517,12 +491,6 @@ namespace GraphVisualizer.Pages
         async void UpdateEdge(Edge edge)
         {
             await JSRuntime.InvokeVoidAsync("updateEdge", edge.ToInternalEdge());
-
-        }
-
-        async void NodeColorChange(Node node)
-        {
-            await JSRuntime.InvokeVoidAsync("updateNode", node.ToInternalNode());
 
         }
 
