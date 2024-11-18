@@ -45,7 +45,7 @@ namespace GraphVisualizer
                     inputstream.Position = 0;
                     using (MemoryStream outputStream = new MemoryStream())
                     {
-                        using (var compressionStream = new CompressionStream(outputStream, 8))
+                        using (var compressionStream = new CompressionStream(outputStream, 15))
                         {
                             await inputstream.CopyToAsync(compressionStream);
                             await compressionStream.FlushAsync();
