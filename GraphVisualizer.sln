@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphVisualizer", "GraphVisualizer\GraphVisualizer.csproj", "{79CE32E2-CFA5-485D-BA8C-CF67381039A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphLibrary", "GraphLibrary\GraphLibrary.csproj", "{43BFE0C2-B7C1-487D-8930-720ABD7B08FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphVisualizerLibrary", "GraphLibrary\GraphVisualizerLibrary.csproj", "{43BFE0C2-B7C1-487D-8930-720ABD7B08FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

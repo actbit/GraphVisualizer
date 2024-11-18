@@ -17,7 +17,7 @@
 	  
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GraphLibrary\GraphLibrary.csproj" />
+    <ProjectReference Include="..\GraphLibrary\GraphVisualizerLibrary.csproj" />
   </ItemGroup>
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
