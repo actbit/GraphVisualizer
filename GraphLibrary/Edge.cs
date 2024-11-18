@@ -8,10 +8,10 @@ namespace GraphLibrary
     public class Edge
     {
         public string ID { get; private set; }
-        internal Node Source {  get; set; }
-        internal Node Target { get; set; }
-        internal int? Weight { get; set; }
-        internal string? Color { get; set; } = "#ccc";
+        public Node Source {  get; set; }
+        public Node Target { get; set; }
+        public int? Weight { get; set; }
+        public string? Color { get; set; } = "#ccc";
         internal Edge(Node source,Node target)
         {
             ID = Guid.NewGuid().ToString();
