@@ -325,7 +325,7 @@ Edgeクラスはedgeの管理を行うクラスです。
 #### 定義
 
 ```cs
-public class Node:object
+public class Edge:object
 ```
 
 
