@@ -285,6 +285,10 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# LibMan/restored client libraries
+**/wwwroot/cytoscape/
+**/wwwroot/dll/
+
 # Visual Studio 6 build log
 *.plg
 
